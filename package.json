@@ -1,0 +1,23 @@
+{
+  "name": "resume-lens",
+  "version": "0.0.1",
+  "description": "AI integration portfolio project — synchronous résumé extraction using AWS Lambda, Bedrock, and TypeScript.",
+  "workspaces": [
+    "packages/*",
+    "infra"
+  ],
+  "scripts": {
+    "build": "npm run build -ws --if-present",
+    "test": "npm test -ws --if-present",
+    "dev": "npm run dev -ws --if-present"
+  },
+  "keywords": [
+    "ai",
+    "aws",
+    "bedrock",
+    "lambda",
+    "typescript"
+  ],
+  "author": "Matthew Warman",
+  "license": "MIT"
+}
