@@ -17,7 +17,7 @@ export interface ResumeExtraction {
 
   summary: string | null;
 
-  inferredSeniorityLevel: "junior" | "mid" | "senior" | "principal" | "unknown";
+  inferredSeniorityLevel: 'junior' | 'mid' | 'senior' | 'principal' | 'unknown';
 
   skills: {
     technical: string[];
@@ -49,11 +49,11 @@ export interface ResumeExtraction {
   extractionMeta: {
     modelId: string;
     processedAt: string;
-    sourceFormat: "pdf";
+    sourceFormat: 'pdf';
     confidence: {
-      experience: "high" | "medium" | "low";
-      education: "high" | "medium" | "low";
-      skills: "high" | "medium" | "low";
+      experience: 'high' | 'medium' | 'low';
+      education: 'high' | 'medium' | 'low';
+      skills: 'high' | 'medium' | 'low';
     };
   };
 }

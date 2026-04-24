@@ -1,2 +1,2 @@
 // Types exports
-export { ResumeExtraction } from "./resume";
+export { ResumeExtraction } from './resume';
