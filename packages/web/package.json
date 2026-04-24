@@ -1,6 +1,6 @@
 {
   "name": "@resume-lens/web",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Web client for resume-lens",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
