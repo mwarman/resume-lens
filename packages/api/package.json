@@ -1,0 +1,16 @@
+{
+  "name": "@resume-lens/api",
+  "version": "0.0.1",
+  "description": "API service for resume-lens",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@resume-lens/shared": "*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

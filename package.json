@@ -19,5 +19,8 @@
     "typescript"
   ],
   "author": "Matthew Warman",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
 }
