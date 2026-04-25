@@ -1,9 +1,9 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import Busboy from 'busboy';
 import { ResumeLensErrorCode, type ResumeExtraction, type ApiErrorResponse } from '@resume-lens/shared';
-import { validate as validateIntake } from '../services/intake.service';
-import { parse as parsePdf } from '../services/parser.service';
-import { extract as extractResume } from '../services/extraction.service';
+import { validate as validateIntake } from '../services/intake-service';
+import { parse as parsePdf } from '../services/parser-service';
+import { extract as extractResume } from '../services/extraction-service';
 
 /**
  * Maps ResumeLensErrorCode to HTTP status code per AD-010.
