@@ -149,8 +149,11 @@ Tech stack is **TypeScript throughout** — frontend, backend, IaC, and shared t
 
 ## Coding Standards
 
+- **Function syntax**: Use arrow functions (`const fn = () => {}`) exclusively. Ensures consistent scoping and modern TypeScript idiom.
+- **Modules vs. classes**: Use exported functions (modules) rather than classes with only static methods. Classes are for object-oriented programming with instance state; services are functional modules with no state.
 - **Naming**: camelCase for functions, PascalCase for types/interfaces/enums.
 - **Error handling**: All errors propagate as typed codes defined in `@resume-lens/shared`. No untyped exceptions in external API responses.
 - **Logging**: Structured logs only (JSON format preferred). Include `extractionMeta.processedAt` and `modelId` in all extraction logs.
 - **Comments**: Explain _why_, not _what_. Code is clear; comments justify trade-offs.
+- **Barrel files**: Do **not** use `index.ts` for public exports in each package. Explicitly export from named files for clarity and better tree-shaking.
 - **Tests**: None required for this portfolio scope.

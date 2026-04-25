@@ -1,7 +1,7 @@
 # resume-lens — Project Overview
 
 **Type:** Portfolio project — AI integration demonstration  
-**Status:** In design / scaffolding phase  
+**Status:** In build phase  
 **Last updated:** April 2026
 
 ---
@@ -32,88 +32,73 @@ The core feature: upload a PDF résumé, receive a structured, typed JSON extrac
 
 ## **Monorepo Structure**
 
+```
 resume-lens/
-
 ├── packages/
-
-│ ├── shared/ \# TypeScript types, error codes — no runtime deps
-
-│ ├── api/ \# TypeScript Lambda functions
-
-│ └── web/ \# React \+ Vite SPA
-
-├── infra/ \# AWS CDK stack
-
-├── package.json \# npm workspaces root
-
-├── tsconfig.base.json \# Shared TS compiler config
-
+│ ├── shared/              # TypeScript types, error codes — no runtime deps
+│ ├── api/                 # TypeScript Lambda functions
+│ └── web/                 # React + Vite SPA
+├── infra/                 # AWS CDK stack
+├── package.json           # npm workspaces root
+├── tsconfig.base.json     # Shared TS compiler config
 └── README.md
+```
 
 ### `packages/shared`
 
 Single responsibility: the shared contract between frontend and backend. No runtime dependencies.
 
+```
 shared/src/
-
-├── types/resume.ts \# ResumeExtraction interface (canonical output type)
-
-└── errors/error-codes.ts \# Typed error code enum
+├── types/resume.ts        # ResumeExtraction interface (canonical output type)
+└── errors/error-codes.ts  # Typed error code enum
+```
 
 ### `packages/api`
 
 Plain TypeScript Lambda function. Three services encapsulate specific functionality with orchestration in a strict one-way dependency chain: Intake → Parser → Extraction.
 
+```
 api/src/
-
 ├── handlers/
-
-│ ├── extract-handler.ts \# Extraction Lambda handler entry point
-
+│ ├── extract-handler.ts           # Extraction Lambda handler entry point
 └── services/
-
-      ├── intake-service.ts        \# File type \+ size validation
-
-      ├── parser-service.ts        \# pdf-parse → raw text string
-
-      └── extraction-service.ts    \# Prompt construction \+ Bedrock invocation
+      ├── intake-service.ts        # File type + size validation
+      ├── parser-service.ts        # pdf-parse → raw text string
+      └── extraction-service.ts    # Prompt construction + Bedrock invocation
+```
 
 ### `packages/web`
 
-Minimal React SPA. Three components, one typed API client.
+Minimal React SPA.
 
+```
 web/src/
-
 ├── main.tsx
-
 ├── App.tsx
-
 ├── components/
-
-│ ├── UploadForm.tsx \# Drag-drop \+ file picker, PDF only, 5MB cap
-
-│ ├── LoadingState.tsx \# Skeleton / spinner during extraction
-
-│ └── ResultCard.tsx \# Renders ResumeExtraction JSON visually
-
+│ ├── UploadForm.tsx        # Drag-drop + file picker, PDF only, 5MB cap
+│ ├── LoadingState.tsx      # Skeleton / spinner during extraction
+│ └── ResultCard.tsx        # Renders ResumeExtraction JSON visually
 └── api/
-
-    └── client.ts           \# Single fetch call, typed against @resume-lens/shared
+    └── api-client.ts       # Single fetch call, typed against @resume-lens/shared
+```
 
 ### `infra/`
 
-One CDK stack provisions all AWS resources.
+AWS CDK provisions all resources. For simplicity in this project, use a single stack.
 
+```
 infra/
-
-├──app.ts \# CDK app entry point
-
-└── stacks/resume-lens-stack.ts \# Lambda \+ API Gateway \+ S3 \+ CloudFront \+ IAM
+├──app.ts                                # CDK app entry point
+└── stacks/resume-lens-stack.ts          # Lambda + API Gateway + S3 + CloudFront + IAM
+```
 
 ---
 
 ## **Data Flow**
 
+```
 Browser
 
 → CloudFront (HTTPS)
@@ -135,6 +120,7 @@ Browser
 ← API Gateway
 
 ← Browser renders ResultCard
+```
 
 All processing is synchronous. No persistence layer. Documents are held in memory for the duration of a single Lambda invocation only.
 
@@ -142,95 +128,54 @@ All processing is synchronous. No persistence layer. Documents are held in memor
 
 ## **Output Type**
 
-The canonical extraction output is defined in `packages/shared/src/types/resume.ts`:
+The canonical extraction output is defined in the shared package.
 
+```ts
 export interface ResumeExtraction {
-
-candidate: {
-
+  candidate: {
     fullName: string;
-
     email: string | null;
-
     phone: string | null;
-
     location: string | null;
-
     linkedIn: string | null;
-
-};
-
-summary: string | null;
-
-inferredSeniorityLevel: 'junior' | 'mid' | 'senior' | 'principal' | 'unknown';
-
-skills: {
-
-    technical: string\[\];
-
-    soft: string\[\];
-
-};
-
-experience: Array\<{
-
+  };
+  summary: string | null;
+  inferredSeniorityLevel: 'junior' | 'mid' | 'senior' | 'principal' | 'unknown';
+  skills: {
+    technical: string[];
+    soft: string[];
+  };
+  experience: Array<{
     company: string;
-
     title: string;
-
-    startDate: string | null;   // ISO 8601 where inferrable, else raw string
-
+    startDate: string | null; // ISO 8601 where inferrable, else raw string
     endDate: string | null;
-
     current: boolean;
-
-    highlights: string\[\];
-
-}\>;
-
-education: Array\<{
-
+    highlights: string[];
+  }>;
+  education: Array<{
     institution: string;
-
     degree: string | null;
-
     field: string | null;
-
     graduationYear: number | null;
-
-}\>;
-
-certifications: Array\<{
-
+  }>;
+  certifications: Array<{
     name: string;
-
     issuer: string | null;
-
     year: number | null;
-
-}\>;
-
-extractionMeta: {
-
+  }>;
+  extractionMeta: {
     modelId: string;
-
-    processedAt: string;          // ISO 8601
-
+    processedAt: string; // ISO 8601
     sourceFormat: 'pdf';
-
     confidence: {
-
       experience: 'high' | 'medium' | 'low';
-
       education: 'high' | 'medium' | 'low';
-
       skills: 'high' | 'medium' | 'low';
-
     };
-
-};
-
+  };
 }
+```
 
 `inferredSeniorityLevel` is computed by the model, not extracted literally. It is the primary demonstration of AI inference vs. text parsing.
 
