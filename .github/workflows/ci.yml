@@ -35,5 +35,4 @@ jobs:
         run: npm run build
 
       - name: Synthesize Infrastructure
-        working-directory: ./infra
-        run: npm run synth
+        run: npm run synth --workspace infra
