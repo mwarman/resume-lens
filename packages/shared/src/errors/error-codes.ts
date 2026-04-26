@@ -23,11 +23,15 @@ export interface ApiErrorResponse {
 /**
  * Typed error class for resume-lens operations.
  * Extends Error to maintain proper error chain and instanceof checks.
+ *
+ * retryAfter is used by BEDROCK_THROTTLED errors to indicate retry delay in seconds
+ * for inclusion in the Retry-After response header.
  */
 export class ResumeLensError extends Error {
   constructor(
     message: string,
     public code: ResumeLensErrorCode,
+    public retryAfter?: number,
   ) {
     super(message);
     this.name = 'ResumeLensError';
