@@ -19,3 +19,18 @@ export interface ApiErrorResponse {
   errorCode: ResumeLensErrorCode;
   message: string;
 }
+
+/**
+ * Typed error class for resume-lens operations.
+ * Extends Error to maintain proper error chain and instanceof checks.
+ */
+export class ResumeLensError extends Error {
+  constructor(
+    message: string,
+    public code: ResumeLensErrorCode,
+  ) {
+    super(message);
+    this.name = 'ResumeLensError';
+    Object.setPrototypeOf(this, ResumeLensError.prototype);
+  }
+}
