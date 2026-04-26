@@ -1,6 +1,11 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import Busboy from 'busboy';
-import { ResumeLensErrorCode, type ResumeExtraction, type ApiErrorResponse } from '@resume-lens/shared';
+import {
+  ResumeLensErrorCode,
+  ResumeLensError,
+  type ResumeExtraction,
+  type ApiErrorResponse,
+} from '@resume-lens/shared';
 import { validate as validateIntake } from '../services/intake-service';
 import { parse as parsePdf } from '../services/parser-service';
 import { extract as extractResume } from '../services/extraction-service';
@@ -115,45 +120,44 @@ export const handler = async (event: APIGatewayProxyEvent, _context: Context): P
     }
 
     // Stage 1: Intake (Validate file type and size)
-    let validatedFile;
     try {
-      validatedFile = validateIntake(parsedData.file, parsedData.mimeType);
+      validateIntake(parsedData.file, parsedData.mimeType);
     } catch (error) {
-      const errorCode = (error as any).code as ResumeLensErrorCode;
+      if (error instanceof ResumeLensError) {
+        const statusCode = errorCodeToHttpStatus(error.code);
+        const errorResponse: ApiErrorResponse = {
+          errorCode: error.code,
+          message: error.message,
+        };
+        return {
+          statusCode,
+          headers: cors,
+          body: JSON.stringify(errorResponse),
+        };
+      }
       const errorMessage = error instanceof Error ? error.message : 'Intake validation failed';
-      const statusCode = errorCodeToHttpStatus(errorCode);
-
-      const errorResponse: ApiErrorResponse = {
-        errorCode,
-        message: errorMessage,
-      };
-
-      return {
-        statusCode,
-        headers: cors,
-        body: JSON.stringify(errorResponse),
-      };
+      throw error;
     }
 
     // Stage 2: Parser (Extract raw text from PDF)
     let rawText: string;
     try {
-      rawText = await parsePdf(validatedFile.file);
+      rawText = await parsePdf(parsedData.file);
     } catch (error) {
-      const errorCode = (error as any).code as ResumeLensErrorCode;
+      if (error instanceof ResumeLensError) {
+        const statusCode = errorCodeToHttpStatus(error.code);
+        const errorResponse: ApiErrorResponse = {
+          errorCode: error.code,
+          message: error.message,
+        };
+        return {
+          statusCode,
+          headers: cors,
+          body: JSON.stringify(errorResponse),
+        };
+      }
       const errorMessage = error instanceof Error ? error.message : 'PDF parsing failed';
-      const statusCode = errorCodeToHttpStatus(errorCode);
-
-      const errorResponse: ApiErrorResponse = {
-        errorCode,
-        message: errorMessage,
-      };
-
-      return {
-        statusCode,
-        headers: cors,
-        body: JSON.stringify(errorResponse),
-      };
+      throw error;
     }
 
     // Stage 3: Extraction (Call Bedrock)
@@ -161,20 +165,20 @@ export const handler = async (event: APIGatewayProxyEvent, _context: Context): P
     try {
       extraction = await extractResume(rawText);
     } catch (error) {
-      const errorCode = (error as any).code as ResumeLensErrorCode;
+      if (error instanceof ResumeLensError) {
+        const statusCode = errorCodeToHttpStatus(error.code);
+        const errorResponse: ApiErrorResponse = {
+          errorCode: error.code,
+          message: error.message,
+        };
+        return {
+          statusCode,
+          headers: cors,
+          body: JSON.stringify(errorResponse),
+        };
+      }
       const errorMessage = error instanceof Error ? error.message : 'Extraction failed';
-      const statusCode = errorCodeToHttpStatus(errorCode);
-
-      const errorResponse: ApiErrorResponse = {
-        errorCode,
-        message: errorMessage,
-      };
-
-      return {
-        statusCode,
-        headers: cors,
-        body: JSON.stringify(errorResponse),
-      };
+      throw error;
     }
 
     // Success: Return 200 with ResumeExtraction

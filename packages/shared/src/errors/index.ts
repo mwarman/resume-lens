@@ -1,2 +1,2 @@
 // Error codes and utilities
-export { ResumeLensErrorCode, type ApiErrorResponse } from './error-codes';
+export { ResumeLensErrorCode, ResumeLensError, type ApiErrorResponse } from './error-codes';

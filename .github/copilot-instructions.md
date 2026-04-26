@@ -156,4 +156,5 @@ Tech stack is **TypeScript throughout** — frontend, backend, IaC, and shared t
 - **Logging**: Structured logs only (JSON format preferred). Include `extractionMeta.processedAt` and `modelId` in all extraction logs.
 - **Comments**: Explain _why_, not _what_. Code is clear; comments justify trade-offs.
 - **Barrel files**: Do **not** use `index.ts` for public exports in each package. Explicitly export from named files for clarity and better tree-shaking.
+- **No any**: Avoid `any` type. Use `unknown` if necessary, but prefer precise types or type guards.
 - **Tests**: None required for this portfolio scope.
