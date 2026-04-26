@@ -3,6 +3,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 
@@ -42,6 +43,24 @@ export class ResumeLensStack extends cdk.Stack {
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       }),
     });
+
+    // Attach IAM policy for Bedrock access (AD-002, AD-003)
+    // Grant bedrock:InvokeModel permission scoped to the specific model ARN only
+    this.extractFunction.role?.attachInlinePolicy(
+      new iam.Policy(this, 'BedrockInvokeModelPolicy', {
+        statements: [
+          new iam.PolicyStatement({
+            actions: ['bedrock:InvokeModel'],
+            resources: [
+              cdk.Fn.sub(
+                'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0',
+              ),
+            ],
+            effect: iam.Effect.ALLOW,
+          }),
+        ],
+      }),
+    );
 
     // Create the API Gateway REST API
     const api = new apigateway.RestApi(this, 'ResumeLensApi', {
