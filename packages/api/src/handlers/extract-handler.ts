@@ -100,7 +100,7 @@ const parseMultipartFormData = (event: APIGatewayProxyEvent): Promise<{ file: Bu
  * Returns typed error response with appropriate HTTP status on failure.
  */
 export const handler = async (event: APIGatewayProxyEvent, _context: Context): Promise<APIGatewayProxyResult> => {
-  console.log(JSON.stringify({ service: 'ExtractHandler', event: 'invoke', eventObj: event }));
+  console.log({ service: 'ExtractHandler', event: 'invoke' });
 
   const cors = getCorsHeaders();
 
@@ -109,14 +109,12 @@ export const handler = async (event: APIGatewayProxyEvent, _context: Context): P
     let parsedData: { file: Buffer; mimeType: string };
     try {
       parsedData = await parseMultipartFormData(event);
-      console.log(
-        JSON.stringify({
-          service: 'ExtractHandler',
-          event: 'file_parsed',
-          fileSize: parsedData.file.length,
-          mimeType: parsedData.mimeType,
-        }),
-      );
+      console.log({
+        service: 'ExtractHandler',
+        event: 'file_parsed',
+        fileSize: parsedData.file.length,
+        mimeType: parsedData.mimeType,
+      });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown parsing error';
       return {
@@ -132,7 +130,7 @@ export const handler = async (event: APIGatewayProxyEvent, _context: Context): P
     // Stage 1: Intake (Validate file type and size)
     try {
       validateIntake(parsedData.file, parsedData.mimeType);
-      console.log(JSON.stringify({ service: 'ExtractHandler', event: 'intake_validated' }));
+      console.log({ service: 'ExtractHandler', event: 'intake_validated' });
     } catch (error) {
       if (error instanceof ResumeLensError) {
         const statusCode = errorCodeToHttpStatus(error.code);
@@ -154,7 +152,7 @@ export const handler = async (event: APIGatewayProxyEvent, _context: Context): P
     let rawText: string;
     try {
       rawText = await parsePdf(parsedData.file);
-      console.log(JSON.stringify({ service: 'ExtractHandler', event: 'pdf_parsed', textLength: rawText.length }));
+      console.log({ service: 'ExtractHandler', event: 'pdf_parsed', textLength: rawText.length });
     } catch (error) {
       if (error instanceof ResumeLensError) {
         const statusCode = errorCodeToHttpStatus(error.code);
@@ -176,7 +174,7 @@ export const handler = async (event: APIGatewayProxyEvent, _context: Context): P
     let extraction: ResumeExtraction;
     try {
       extraction = await extractResume(rawText);
-      console.log(JSON.stringify({ service: 'ExtractHandler', event: 'extraction_complete', data: extraction }));
+      console.log({ service: 'ExtractHandler', event: 'extraction_complete', data: extraction });
     } catch (error) {
       if (error instanceof ResumeLensError) {
         const statusCode = errorCodeToHttpStatus(error.code);
@@ -199,7 +197,7 @@ export const handler = async (event: APIGatewayProxyEvent, _context: Context): P
     }
 
     // Success: Return 200 with ResumeExtraction
-    console.log(JSON.stringify({ service: 'ExtractHandler', event: 'handler_complete' }));
+    console.log({ service: 'ExtractHandler', event: 'handler_complete' });
     return {
       statusCode: 200,
       headers: {
@@ -211,10 +209,7 @@ export const handler = async (event: APIGatewayProxyEvent, _context: Context): P
   } catch (error) {
     // Unexpected error: Return 500
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error(
-      JSON.stringify({ service: 'ExtractHandler', event: 'unexpected_error', message: errorMessage }),
-      error,
-    );
+    console.error({ service: 'ExtractHandler', event: 'unexpected_error', message: errorMessage }, error);
 
     const errorResponse: ApiErrorResponse = {
       errorCode: ResumeLensErrorCode.BEDROCK_ERROR, // Generic error code for unexpected failures
