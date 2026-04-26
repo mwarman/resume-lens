@@ -9,7 +9,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@aws-sdk/client-bedrock-runtime": "3.1036.0",
+    "@aws-sdk/client-bedrock-runtime": "3.1037.0",
     "@resume-lens/shared": "*",
     "busboy": "1.6.0",
     "pdf-parse": "2.4.5"
