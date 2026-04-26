@@ -17,7 +17,7 @@ Do the following to implement the issue:
 
 - Use the GitHub MCP server to read the issue description and any related comments to understand the requirements and context.
 - Identify the necessary code changes, tests, and documentation updates needed to implement the issue.
-- A step-by-step breakdown of the tasks required to implement the issue, including any necessary code changes, tests, and documentation updates.
+- Create a step-by-step breakdown of the tasks required to implement the issue, including any necessary code changes, tests, and documentation updates.
 - Ask any clarifying questions if the issue description is not clear or if you need more information to proceed with the implementation.
 - Ask for permission as you implement each step, and wait for confirmation before proceeding to the next step.
 
