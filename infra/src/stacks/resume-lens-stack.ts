@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as logs from 'aws-cdk-lib/aws-logs';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 
@@ -40,6 +41,41 @@ export class ResumeLensStack extends cdk.Stack {
         retention: logs.RetentionDays.THREE_DAYS,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       }),
+    });
+
+    // Create the API Gateway REST API
+    const api = new apigateway.RestApi(this, 'ResumeLensApi', {
+      restApiName: 'resume-lens-api',
+      description: 'API for resume extraction via Claude 3 Haiku on Bedrock',
+      deploy: true,
+    });
+
+    // Add the /extract resource with POST method
+    const extractResource = api.root.addResource('extract');
+    const lambdaIntegration = new apigateway.LambdaIntegration(this.extractFunction);
+    extractResource.addMethod('POST', lambdaIntegration, {
+      methodResponses: [
+        {
+          statusCode: '200',
+          responseModels: {
+            'application/json': apigateway.Model.EMPTY_MODEL,
+          },
+        },
+      ],
+    });
+
+    // Enable CORS on the /extract resource
+    extractResource.addCorsPreflight({
+      allowOrigins: ['*'],
+      allowMethods: ['POST'],
+      allowHeaders: ['Content-Type'],
+    });
+
+    // Output the API Gateway base URL
+    new cdk.CfnOutput(this, 'ApiGatewayUrl', {
+      description: 'API Gateway base URL',
+      value: api.url,
+      exportName: 'ResumeLensApiUrl',
     });
   }
 }
