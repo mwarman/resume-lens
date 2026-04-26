@@ -21,7 +21,7 @@ export class ResumeLensStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Create the extract Lambda function (M3-2)
+    // Create the extract Lambda function
     this.extractFunction = new NodejsFunction(this, 'ExtractFunction', {
       functionName: 'resume-lens-extract',
       runtime: lambda.Runtime.NODEJS_24_X,
