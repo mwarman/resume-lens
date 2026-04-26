@@ -171,9 +171,13 @@ export const handler = async (event: APIGatewayProxyEvent, _context: Context): P
           errorCode: error.code,
           message: error.message,
         };
+        const responseHeaders: Record<string, string | number> = { ...cors };
+        if (error.code === ResumeLensErrorCode.BEDROCK_THROTTLED && error.retryAfter !== undefined) {
+          responseHeaders['Retry-After'] = error.retryAfter;
+        }
         return {
           statusCode,
-          headers: cors,
+          headers: responseHeaders,
           body: JSON.stringify(errorResponse),
         };
       }
