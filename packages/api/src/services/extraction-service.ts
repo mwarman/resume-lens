@@ -111,7 +111,7 @@ const deriveConfidence = (
  * @throws ResumeLensError with EXTRACTION_PARSE_FAILURE if response cannot be parsed
  */
 export const extract = async (rawText: string): Promise<ResumeExtraction> => {
-  console.log(JSON.stringify({ service: 'ExtractionService', event: 'extract_start', textLength: rawText.length }));
+  console.log({ service: 'ExtractionService', event: 'extract_start', textLength: rawText.length });
 
   const payload = {
     anthropic_version: 'bedrock-2023-05-31',
@@ -138,7 +138,7 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
     responseBody = response.body;
   } catch (error) {
     if (error instanceof ThrottlingException) {
-      console.warn(JSON.stringify({ service: 'ExtractionService', event: 'bedrock_throttled' }));
+      console.warn({ service: 'ExtractionService', event: 'bedrock_throttled' });
       // retryAfter: 30 seconds — conservative default for portfolio demo scale
       throw new ResumeLensError(
         'Bedrock request throttled. Please retry shortly.',
@@ -147,7 +147,7 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
       );
     }
     const message = error instanceof Error ? error.message : 'Unknown Bedrock error';
-    console.error(JSON.stringify({ service: 'ExtractionService', event: 'bedrock_error', message }));
+    console.error({ service: 'ExtractionService', event: 'bedrock_error', message });
     throw new ResumeLensError(`Bedrock invocation failed: ${message}`, ResumeLensErrorCode.BEDROCK_ERROR);
   }
 
@@ -171,7 +171,7 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
     extractedData = parsed;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Parse failure';
-    console.error(JSON.stringify({ service: 'ExtractionService', event: 'parse_failure', message }));
+    console.error({ service: 'ExtractionService', event: 'parse_failure', message });
     throw new ResumeLensError(
       `Failed to parse extraction response: ${message}`,
       ResumeLensErrorCode.EXTRACTION_PARSE_FAILURE,
@@ -191,15 +191,13 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
     },
   };
 
-  console.log(
-    JSON.stringify({
-      service: 'ExtractionService',
-      event: 'extract_complete',
-      modelId: MODEL_ID,
-      processedAt,
-      confidence,
-    }),
-  );
+  console.log({
+    service: 'ExtractionService',
+    event: 'extract_complete',
+    modelId: MODEL_ID,
+    processedAt,
+    confidence,
+  });
 
   return result;
 };

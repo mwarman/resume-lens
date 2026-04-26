@@ -100,7 +100,7 @@ const parseMultipartFormData = (event: APIGatewayProxyEvent): Promise<{ file: Bu
  * Returns typed error response with appropriate HTTP status on failure.
  */
 export const handler = async (event: APIGatewayProxyEvent, _context: Context): Promise<APIGatewayProxyResult> => {
-  console.log({ service: 'ExtractHandler', event: 'invoke' });
+  console.log({ service: 'ExtractHandler', event: 'invoke', apiGatewayProxyEvent: { ...event, body: '[REDACTED]' } });
 
   const cors = getCorsHeaders();
 
