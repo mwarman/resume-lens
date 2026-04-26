@@ -33,3 +33,7 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Synthesize Infrastructure
+        working-directory: ./infra
+        run: npm run synth
