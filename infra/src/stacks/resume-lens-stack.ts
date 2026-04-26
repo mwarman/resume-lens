@@ -42,6 +42,10 @@ export class ResumeLensStack extends cdk.Stack {
         retention: logs.RetentionDays.THREE_DAYS,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       }),
+      bundling: {
+        minify: true,
+        sourceMap: true,
+      },
     });
 
     // Attach IAM policy for Bedrock access (AD-002, AD-003)
@@ -63,10 +67,13 @@ export class ResumeLensStack extends cdk.Stack {
     );
 
     // Create the API Gateway REST API
+    // binaryMediaTypes ensures multipart/form-data bodies are base64-encoded by API Gateway
+    // before passing to Lambda. Without this, binary PDF bytes are corrupted by text encoding.
     const api = new apigateway.RestApi(this, 'ResumeLensApi', {
       restApiName: 'resume-lens-api',
       description: 'API for resume extraction via Claude 3 Haiku on Bedrock',
       deploy: true,
+      binaryMediaTypes: ['multipart/form-data'],
     });
 
     // Add the /extract resource with POST method
