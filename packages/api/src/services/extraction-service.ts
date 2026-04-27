@@ -1,11 +1,11 @@
 import { BedrockRuntimeClient, InvokeModelCommand, ThrottlingException } from '@aws-sdk/client-bedrock-runtime';
-import z from 'zod';
 
 import {
   ResumeJsonSchema,
   ResumeLensError,
   ResumeLensErrorCode,
   ResumeSchema,
+  type Resume,
   type ResumeExtraction,
 } from '@resume-lens/shared';
 
@@ -13,33 +13,6 @@ const MODEL_ID = 'us.anthropic.claude-haiku-4-5-20251001-v1:0';
 
 // Instantiated once per Lambda container — connection reuse across warm invocations
 const bedrockClient = new BedrockRuntimeClient({});
-
-/**
- * Validates that a parsed object structurally conforms to ResumeExtraction (sans extractionMeta).
- * Throws EXTRACTION_PARSE_FAILURE if required fields are missing or of wrong type.
- */
-const validateExtractionShape = (obj: unknown): obj is Omit<ResumeExtraction, 'extractionMeta'> => {
-  if (typeof obj !== 'object' || obj === null) return false;
-
-  const o = obj as Record<string, unknown>;
-
-  if (typeof o['candidate'] !== 'object' || o['candidate'] === null) return false;
-  const c = o['candidate'] as Record<string, unknown>;
-  if (typeof c['fullName'] !== 'string') return false;
-
-  if (!Array.isArray(o['experience'])) return false;
-  if (!Array.isArray(o['education'])) return false;
-  if (!Array.isArray(o['certifications'])) return false;
-
-  if (typeof o['skills'] !== 'object' || o['skills'] === null) return false;
-  const s = o['skills'] as Record<string, unknown>;
-  if (!Array.isArray(s['technical']) || !Array.isArray(s['soft'])) return false;
-
-  const validSeniority = ['junior', 'mid', 'senior', 'principal', 'unknown'];
-  if (!validSeniority.includes(o['inferredSeniorityLevel'] as string)) return false;
-
-  return true;
-};
 
 /**
  * Derives per-section confidence based on data completeness.
@@ -80,6 +53,7 @@ const deriveConfidence = (
 export const extract = async (rawText: string): Promise<ResumeExtraction> => {
   console.log({ service: 'ExtractionService', event: 'extract_start', textLength: rawText.length });
 
+  // Construct the prompt and payload for Bedrock
   const payload = {
     anthropic_version: 'bedrock-2023-05-31',
     max_tokens: 4096,
@@ -111,6 +85,7 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
       commandInput: { ...command.input, body: '[REDACTED]' },
     });
 
+    // Invoke the model via Bedrock SDK
     const response = await bedrockClient.send(command);
     console.log({
       service: 'ExtractionService',
@@ -134,8 +109,8 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
     throw new ResumeLensError(`Bedrock invocation failed: ${message}`, ResumeLensErrorCode.BEDROCK_ERROR);
   }
 
-  // Decode and parse Bedrock response
-  let extractedData: Omit<ResumeExtraction, 'extractionMeta'>;
+  // Decode, parse, and validate the Bedrock response
+  let extractedData: Resume;
   try {
     const decoded = new TextDecoder().decode(responseBody);
     const bedrockResponse = JSON.parse(decoded) as { content: Array<{ type: string; text: string }> };
@@ -153,11 +128,18 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
 
     const parsed: unknown = JSON.parse(textBlock.text);
 
-    if (!validateExtractionShape(parsed)) {
-      throw new Error('Response does not conform to ResumeExtraction schema');
+    const resumeValidationResult = ResumeSchema.safeParse(parsed);
+    if (!resumeValidationResult.success) {
+      console.error({
+        service: 'ExtractionService',
+        event: 'schema_validation_failure',
+        errors: resumeValidationResult.error.issues,
+      });
+      throw new Error('Parsed response does not conform to ResumeSchema');
     }
+    console.log({ service: 'ExtractionService', event: 'schema_validation_success' });
 
-    extractedData = parsed;
+    extractedData = resumeValidationResult.data;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Parse failure';
     console.error({ service: 'ExtractionService', event: 'parse_failure', message });
@@ -167,6 +149,7 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
     );
   }
 
+  // Derive confidence scores and construct the final result
   const processedAt = new Date().toISOString();
   const confidence = deriveConfidence(extractedData);
 
