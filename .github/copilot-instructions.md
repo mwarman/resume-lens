@@ -7,7 +7,7 @@ description: AI integration portfolio project — synchronous résumé extractio
 
 ## Overview
 
-**resume-lens** is a portfolio piece demonstrating production-grade AI integration at AWS scale. The system extracts structured, typed JSON from PDF résumés using Claude 3 Haiku on AWS Bedrock.
+**resume-lens** is a portfolio piece demonstrating production-grade AI integration at AWS scale. The system extracts structured, typed JSON from PDF résumés using Claude Haiku on AWS Bedrock.
 
 Architecture: monorepo (npm workspaces) with three core packages (`shared`, `api`, `web`) plus infrastructure as code (`infra/` via AWS CDK).
 
@@ -17,10 +17,10 @@ Tech stack is **TypeScript throughout** — frontend, backend, IaC, and shared t
 
 ## Core Architectural Constraints
 
-### AD-002: AWS Bedrock (Claude 3 Haiku)
+### AD-002: AWS Bedrock (Claude Haiku)
 
 - **Non-negotiable**: Bedrock via IAM execution roles — no direct Anthropic API.
-- **Model**: Claude 3 Haiku only. Cost-driven. Sufficient for structured extraction from clean text.
+- **Model**: Claude Haiku only. Cost-driven. Sufficient for structured extraction from clean text.
 - **Capture context**: Every response includes `extractionMeta.modelId` for auditability.
 
 ### AD-003: No Persistence
@@ -36,7 +36,7 @@ Tech stack is **TypeScript throughout** — frontend, backend, IaC, and shared t
 ### AD-007: PDF-Only, 5MB Cap
 
 - Enforce file type and size in Intake service. DOCX not supported.
-- Parsed via `pdf-parse` (npm) — in-process, no external service.
+- Parsed via `unpdf` (npm) — in-process, no external service.
 
 ### AD-008: Synchronous Processing
 
@@ -70,16 +70,17 @@ Tech stack is **TypeScript throughout** — frontend, backend, IaC, and shared t
 - Contains:
   - `types/resume.ts` — canonical `ResumeExtraction` interface.
   - `errors/error-codes.ts` — typed error enum.
+- Dependencies: `zod`.
 - All other packages import from here.
 
 ### `packages/api`
 
 - Three services + one handler:
   - **Intake service**: File type + size validation. Returns typed errors.
-  - **Parser service**: `pdf-parse` → raw text string. Error-tolerant parsing.
+- **Parser service**: `unpdf` → raw text string. Error-tolerant parsing.
   - **Extraction service**: Prompt construction + Bedrock call. Structured JSON extraction.
   - **Handler**: Orchestrates the three-service pipeline. Entry point for Lambda.
-- Dependencies: `@resume-lens/shared`, `pdf-parse`, AWS SDK (Bedrock client).
+- Dependencies: `@resume-lens/shared`, `unpdf`, AWS SDK (Bedrock client).
 - No third-party web frameworks.
 
 ### `packages/web`
@@ -123,31 +124,20 @@ Tech stack is **TypeScript throughout** — frontend, backend, IaC, and shared t
 
 - [Architecture Decisions](./docs/architecural-decisions.md) — authoritative log of all design rationale (AD-001 through AD-012).
 - [Project Overview](./docs/project-overview.md) — summary of purpose, tech stack, data flow, error handling, cost profile.
-- `packages/shared/src/types/resume.ts` — the extraction output contract.
-- `packages/api/src/handlers/extract-handler.ts` — Lambda entry point.
-- `infra/lib/resume-lens-stack.ts` — CDK stack definition.
-
----
-
-## Cost & Scale
-
-- **Demo scale**: \~100 invocations/month.
-- **Estimated cost**: \< $0.10/month (Lambda + Bedrock + S3 + CloudFront).
-- **Lambda cold start**: Expected 1–2s (TypeScript + pdf-parse cold start).
-- **Extraction latency**: 3–5s (Bedrock call).
-- **Total round-trip**: 4–7s.
 
 ---
 
 ## When to Escalate
 
-- **Extraction quality degrades on real-world résumés** → Escalate from Haiku to Claude 3 Sonnet. Document in AD-012.
+- **Extraction quality degrades on real-world résumés** → Escalate from Haiku to Claude Sonnet. Document in AD-012.
 - **Lambda memory insufficient** → Monitor cold start failures. Scale to 1GB if needed (cost impact: \< $0.01/month at demo scale).
 - **Résumés exceed 5MB regularly** → Adjust cap. Document rationale in AD-007.
 
 ---
 
 ## Coding Standards
+
+### General
 
 - **Function syntax**: Use arrow functions (`const fn = () => {}`) exclusively. Ensures consistent scoping and modern TypeScript idiom.
 - **Modules vs. classes**: Use exported functions (modules) rather than classes with only static methods. Classes are for object-oriented programming with instance state; services are functional modules with no state.
@@ -158,3 +148,11 @@ Tech stack is **TypeScript throughout** — frontend, backend, IaC, and shared t
 - **Barrel files**: Do **not** use `index.ts` for public exports in each package. Explicitly export from named files for clarity and better tree-shaking.
 - **No any**: Avoid `any` type. Use `unknown` if necessary, but prefer precise types or type guards.
 - **Tests**: None required for this portfolio scope.
+
+### Frontend
+
+- **State management**: Local component state only. No Redux or context API.
+- **Styling**: Minimal inline styles or CSS modules. No external CSS frameworks.
+- **API client**: Single client module (`api/client.ts`) with typed methods corresponding to backend services. No direct `fetch` calls in components.
+- **Error display**: Map backend error codes to user-friendly messages in the UI. No raw error codes shown to users.
+- **Logging**: Console logs only for development. No logging of sensitive data (e.g., résumé content).
