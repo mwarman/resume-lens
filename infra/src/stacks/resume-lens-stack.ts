@@ -32,7 +32,7 @@ export class ResumeLensStack extends cdk.Stack {
       memorySize: 512,
       timeout: cdk.Duration.seconds(30),
       environment: {
-        BEDROCK_MODEL_ID: 'anthropic.claude-haiku-4-5-20251001-v1:0',
+        BEDROCK_MODEL_ID: 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
       },
       loggingFormat: lambda.LoggingFormat.JSON,
       applicationLogLevelV2: lambda.ApplicationLogLevel.DEBUG,
@@ -42,6 +42,10 @@ export class ResumeLensStack extends cdk.Stack {
         retention: logs.RetentionDays.THREE_DAYS,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       }),
+      bundling: {
+        minify: true,
+        sourceMap: true,
+      },
     });
 
     // Attach IAM policy for Bedrock access (AD-002, AD-003)
@@ -53,7 +57,7 @@ export class ResumeLensStack extends cdk.Stack {
             actions: ['bedrock:InvokeModel'],
             resources: [
               cdk.Fn.sub(
-                'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0',
+                'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/us.anthropic.claude-haiku-4-5-20251001-v1:0',
               ),
             ],
             effect: iam.Effect.ALLOW,
@@ -63,10 +67,13 @@ export class ResumeLensStack extends cdk.Stack {
     );
 
     // Create the API Gateway REST API
+    // binaryMediaTypes ensures multipart/form-data bodies are base64-encoded by API Gateway
+    // before passing to Lambda. Without this, binary PDF bytes are corrupted by text encoding.
     const api = new apigateway.RestApi(this, 'ResumeLensApi', {
       restApiName: 'resume-lens-api',
       description: 'API for resume extraction via Claude 3 Haiku on Bedrock',
       deploy: true,
+      binaryMediaTypes: ['multipart/form-data'],
     });
 
     // Add the /extract resource with POST method

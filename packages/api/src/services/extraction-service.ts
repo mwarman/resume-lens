@@ -1,79 +1,18 @@
 import { BedrockRuntimeClient, InvokeModelCommand, ThrottlingException } from '@aws-sdk/client-bedrock-runtime';
-import { ResumeLensError, ResumeLensErrorCode, type ResumeExtraction } from '@resume-lens/shared';
 
-const MODEL_ID = 'anthropic.claude-haiku-4-5-20251001-v1:0';
+import {
+  ResumeJsonSchema,
+  ResumeLensError,
+  ResumeLensErrorCode,
+  ResumeSchema,
+  type Resume,
+  type ResumeExtraction,
+} from '@resume-lens/shared';
+
+const MODEL_ID = 'us.anthropic.claude-haiku-4-5-20251001-v1:0';
 
 // Instantiated once per Lambda container — connection reuse across warm invocations
 const bedrockClient = new BedrockRuntimeClient({});
-
-const SYSTEM_PROMPT = `You are a resume data extraction engine. Extract structured information from the resume text and return ONLY valid JSON conforming exactly to the following TypeScript interface — no markdown, no explanation, no prose:
-
-{
-  "candidate": {
-    "fullName": string,
-    "email": string | null,
-    "phone": string | null,
-    "location": string | null,
-    "linkedIn": string | null
-  },
-  "summary": string | null,
-  "inferredSeniorityLevel": "junior" | "mid" | "senior" | "principal" | "unknown",
-  "skills": {
-    "technical": string[],
-    "soft": string[]
-  },
-  "experience": Array<{
-    "company": string,
-    "title": string,
-    "startDate": string | null,
-    "endDate": string | null,
-    "current": boolean,
-    "highlights": string[]
-  }>,
-  "education": Array<{
-    "institution": string,
-    "degree": string | null,
-    "field": string | null,
-    "graduationYear": number | null
-  }>,
-  "certifications": Array<{
-    "name": string,
-    "issuer": string | null,
-    "year": number | null
-  }>
-}
-
-Rules:
-- Use null (not undefined, not empty string) for absent optional fields.
-- inferredSeniorityLevel must be inferred from overall experience and role history, not parsed.
-- Return ONLY the JSON object. No surrounding text.`;
-
-/**
- * Validates that a parsed object structurally conforms to ResumeExtraction (sans extractionMeta).
- * Throws EXTRACTION_PARSE_FAILURE if required fields are missing or of wrong type.
- */
-const validateExtractionShape = (obj: unknown): obj is Omit<ResumeExtraction, 'extractionMeta'> => {
-  if (typeof obj !== 'object' || obj === null) return false;
-
-  const o = obj as Record<string, unknown>;
-
-  if (typeof o['candidate'] !== 'object' || o['candidate'] === null) return false;
-  const c = o['candidate'] as Record<string, unknown>;
-  if (typeof c['fullName'] !== 'string') return false;
-
-  if (!Array.isArray(o['experience'])) return false;
-  if (!Array.isArray(o['education'])) return false;
-  if (!Array.isArray(o['certifications'])) return false;
-
-  if (typeof o['skills'] !== 'object' || o['skills'] === null) return false;
-  const s = o['skills'] as Record<string, unknown>;
-  if (!Array.isArray(s['technical']) || !Array.isArray(s['soft'])) return false;
-
-  const validSeniority = ['junior', 'mid', 'senior', 'principal', 'unknown'];
-  if (!validSeniority.includes(o['inferredSeniorityLevel'] as string)) return false;
-
-  return true;
-};
 
 /**
  * Derives per-section confidence based on data completeness.
@@ -99,10 +38,11 @@ const deriveConfidence = (
 };
 
 /**
- * Extracts structured resume data from raw text using Bedrock (Claude 3 Haiku).
+ * Extracts structured resume data from raw text using Bedrock (Claude Haiku).
  *
- * Constructs a prompt instructing JSON-only output, calls InvokeModelCommand,
- * parses the response, and validates structural conformance to ResumeExtraction.
+ * Constructs a prompt to instruct the model to extract relevant fields, invokes the model via Bedrock SDK,
+ * and processes the response. Uses a JSON schema to enforce structured output. Implements error handling for
+ * Bedrock throttling and parsing issues.
  *
  * @param rawText - Raw text extracted from PDF by ParserService
  * @returns Structured ResumeExtraction object
@@ -111,18 +51,24 @@ const deriveConfidence = (
  * @throws ResumeLensError with EXTRACTION_PARSE_FAILURE if response cannot be parsed
  */
 export const extract = async (rawText: string): Promise<ResumeExtraction> => {
-  console.log(JSON.stringify({ service: 'ExtractionService', event: 'extract_start', textLength: rawText.length }));
+  console.log({ service: 'ExtractionService', event: 'extract_start', textLength: rawText.length });
 
+  // Construct the prompt and payload for Bedrock
   const payload = {
     anthropic_version: 'bedrock-2023-05-31',
     max_tokens: 4096,
-    system: SYSTEM_PROMPT,
     messages: [
       {
         role: 'user',
         content: `Extract structured data from this resume:\n\n${rawText}`,
       },
     ],
+    output_config: {
+      format: {
+        type: 'json_schema',
+        schema: ResumeJsonSchema,
+      },
+    },
   };
 
   let responseBody: Uint8Array;
@@ -133,12 +79,24 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
       accept: 'application/json',
       body: new TextEncoder().encode(JSON.stringify(payload)),
     });
+    console.log({
+      service: 'ExtractionService',
+      event: 'invoke_bedrock',
+      commandInput: { ...command.input, body: '[REDACTED]' },
+    });
 
+    // Invoke the model via Bedrock SDK
     const response = await bedrockClient.send(command);
+    console.log({
+      service: 'ExtractionService',
+      event: 'bedrock_response',
+      response: { ...response, body: '[REDACTED]' },
+    });
+
     responseBody = response.body;
   } catch (error) {
     if (error instanceof ThrottlingException) {
-      console.warn(JSON.stringify({ service: 'ExtractionService', event: 'bedrock_throttled' }));
+      console.warn({ service: 'ExtractionService', event: 'bedrock_throttled' });
       // retryAfter: 30 seconds — conservative default for portfolio demo scale
       throw new ResumeLensError(
         'Bedrock request throttled. Please retry shortly.',
@@ -147,37 +105,51 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
       );
     }
     const message = error instanceof Error ? error.message : 'Unknown Bedrock error';
-    console.error(JSON.stringify({ service: 'ExtractionService', event: 'bedrock_error', message }));
+    console.error({ service: 'ExtractionService', event: 'bedrock_error', message });
     throw new ResumeLensError(`Bedrock invocation failed: ${message}`, ResumeLensErrorCode.BEDROCK_ERROR);
   }
 
-  // Decode and parse Bedrock response
-  let extractedData: Omit<ResumeExtraction, 'extractionMeta'>;
+  // Decode, parse, and validate the Bedrock response
+  let extractedData: Resume;
   try {
     const decoded = new TextDecoder().decode(responseBody);
     const bedrockResponse = JSON.parse(decoded) as { content: Array<{ type: string; text: string }> };
 
     const textBlock = bedrockResponse.content.find((block) => block.type === 'text');
+    console.log({
+      service: 'ExtractionService',
+      event: 'bedrock_response_parsed',
+      textBlockLength: textBlock?.text.length ?? 0,
+      textBlockPreview: textBlock ? textBlock.text.slice(0, 100) : 'N/A',
+    });
     if (!textBlock) {
       throw new Error('No text content block in Bedrock response');
     }
 
     const parsed: unknown = JSON.parse(textBlock.text);
 
-    if (!validateExtractionShape(parsed)) {
-      throw new Error('Response does not conform to ResumeExtraction schema');
+    const resumeValidationResult = ResumeSchema.safeParse(parsed);
+    if (!resumeValidationResult.success) {
+      console.error({
+        service: 'ExtractionService',
+        event: 'schema_validation_failure',
+        errors: resumeValidationResult.error.issues,
+      });
+      throw new Error('Parsed response does not conform to ResumeSchema');
     }
+    console.log({ service: 'ExtractionService', event: 'schema_validation_success' });
 
-    extractedData = parsed;
+    extractedData = resumeValidationResult.data;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Parse failure';
-    console.error(JSON.stringify({ service: 'ExtractionService', event: 'parse_failure', message }));
+    console.error({ service: 'ExtractionService', event: 'parse_failure', message });
     throw new ResumeLensError(
       `Failed to parse extraction response: ${message}`,
       ResumeLensErrorCode.EXTRACTION_PARSE_FAILURE,
     );
   }
 
+  // Derive confidence scores and construct the final result
   const processedAt = new Date().toISOString();
   const confidence = deriveConfidence(extractedData);
 
@@ -191,15 +163,12 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
     },
   };
 
-  console.log(
-    JSON.stringify({
-      service: 'ExtractionService',
-      event: 'extract_complete',
-      modelId: MODEL_ID,
-      processedAt,
-      confidence,
-    }),
-  );
+  console.log({
+    service: 'ExtractionService',
+    event: 'extract_complete',
+    modelId: MODEL_ID,
+    processedAt,
+  });
 
   return result;
 };
