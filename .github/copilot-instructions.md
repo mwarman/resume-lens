@@ -156,3 +156,4 @@ Tech stack is **TypeScript throughout** — frontend, backend, IaC, and shared t
 - **API client**: Single client module (`api/client.ts`) with typed methods corresponding to backend services. No direct `fetch` calls in components.
 - **Error display**: Map backend error codes to user-friendly messages in the UI. No raw error codes shown to users.
 - **Logging**: Console logs only for development. No logging of sensitive data (e.g., résumé content).
+- **Comments**: Focus on UX rationale (e.g., why a loading skeleton is used instead of streaming). Avoid implementation details in comments. Comment for all functional components and complex logic.
