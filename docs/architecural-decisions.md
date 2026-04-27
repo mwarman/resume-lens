@@ -22,13 +22,13 @@ New decisions should be appended in the same format as sessions progress.
 
 ## **AD-002 — AI provider: AWS Bedrock**
 
-**Decision:** Use AWS Bedrock (Claude 3 Haiku) as the AI provider.
+**Decision:** Use AWS Bedrock (Claude 4.x Haiku) as the AI provider.
 
 **Alternatives considered:**
 
 - Anthropic API (direct)
 
-**Rationale:** Bedrock keeps the entire solution AWS-native, which is consistent with the portfolio positioning (AWS-certified architect). IAM-based authentication (Lambda execution role) means no API keys in code or environment variables — a meaningful security signal for an enterprise audience. Claude 3 Haiku is the lowest-cost Bedrock model with sufficient capability for structured JSON extraction from résumé text.
+**Rationale:** Bedrock keeps the entire solution AWS-native, which is consistent with the portfolio positioning (AWS-certified architect). IAM-based authentication (Lambda execution role) means no API keys in code or environment variables — a meaningful security signal for an enterprise audience. Claude 4 Haiku is the lowest-cost Bedrock model with sufficient capability for structured JSON extraction from résumé text.
 
 **Trade-off acknowledged:** Bedrock setup requires more AWS configuration than a direct Anthropic API key. For a demo with no audience, Anthropic direct would be simpler. Bedrock is the right choice here because the AWS configuration complexity is itself a portfolio signal.
 
@@ -153,14 +153,12 @@ New decisions should be appended in the same format as sessions progress.
 
 **Decision:** 512MB Lambda memory.
 
-**Rationale:** `pdf-parse` is memory-light. 512MB is right-sized for this workload — enough headroom for cold start stability without over-provisioning. At demo invocation volumes, the cost difference between 256MB and 512MB is negligible (\< $0.001/month).
+**Rationale:** `unpdf` is memory-light. 512MB is right-sized for this workload — enough headroom for cold start stability without over-provisioning. At demo invocation volumes, the cost difference between 256MB and 512MB is negligible (\< $0.001/month).
 
 ---
 
-## **AD-012 — Bedrock model selection: Claude 3 Haiku**
+## **AD-012 — Bedrock model selection: Claude 4.x Haiku**
 
-**Decision:** Claude 3 Haiku via Bedrock for all extraction calls.
+**Decision:** Claude 4 Haiku via Bedrock for all extraction calls.
 
-**Rationale:** Haiku is the lowest-cost Claude model available on Bedrock. For structured JSON extraction from clean text (résumé content extracted by `pdf-parse`), Haiku's capability is sufficient — this is not a reasoning-heavy task. Sonnet or Opus would add cost without adding meaningful extraction quality for well-formatted résumés. `modelId` is captured in `extractionMeta` on every response, making a future model upgrade traceable in output history.
-
-**Revisit trigger:** If extraction quality is demonstrably poor on real-world résumé samples during testing, escalate to Claude 3 Sonnet. Document the change here.
+**Rationale:** Haiku is the lowest-cost Claude model available on Bedrock. For structured JSON extraction from clean text (résumé content extracted by `unpdf`), Haiku's capability is sufficient — this is not a reasoning-heavy task. Sonnet or Opus would add cost without adding meaningful extraction quality for well-formatted résumés. `modelId` is captured in `extractionMeta` on every response, making a future model upgrade traceable in output history.

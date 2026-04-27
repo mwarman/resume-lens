@@ -23,8 +23,8 @@ The core feature: upload a PDF résumé, receive a structured, typed JSON extrac
 | API layer        | Plain TypeScript Lambda functions | AWS-native, pay-as-you-use pricing         |
 | Compute          | AWS Lambda                        | 512MB memory, synchronous request/response |
 | API Gateway      | AWS API Gateway                   | Two routes: `POST /extract`                |
-| PDF parsing      | `pdf-parse` (npm)                 | In-process, no external service            |
-| AI provider      | AWS Bedrock — Claude 3 Haiku      | On-demand pricing, no provisioned capacity |
+| PDF parsing      | `unpdf` (npm)                     | In-process, no external service            |
+| AI provider      | AWS Bedrock — Claude 4 Haiku      | On-demand pricing, no provisioned capacity |
 | Infrastructure   | AWS CDK (TypeScript)              | Single stack, all resources co-located     |
 | Language         | TypeScript throughout             | Shared types across all packages           |
 
@@ -64,7 +64,7 @@ api/src/
 │ ├── extract-handler.ts           # Extraction Lambda handler entry point
 └── services/
       ├── intake-service.ts        # File type + size validation
-      ├── parser-service.ts        # pdf-parse → raw text string
+      ├── parser-service.ts        # Parse PDF → raw text string
       └── extraction-service.ts    # Prompt construction + Bedrock invocation
 ```
 
@@ -107,11 +107,11 @@ Browser
 
 → Lambda
 
-      → Intake service   (validate file type \+ size)
+      → Intake service   (validate file type + size)
 
-      → Parser service   (pdf-parse → raw text)
+      → Parser service   (parse PDF → raw text)
 
-      → Extraction service (prompt \+ Bedrock call)
+      → Extraction service (prompt + Bedrock call)
 
 → AWS Bedrock (Claude 3 Haiku)
 
