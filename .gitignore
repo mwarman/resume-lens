@@ -15,6 +15,7 @@ cdk.out/
 # Environment
 .env*
 !.env.example
+!vite-env.d.ts
 
 # IDE
 .vscode/
