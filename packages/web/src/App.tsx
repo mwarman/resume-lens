@@ -3,6 +3,7 @@ import type { ResumeExtraction } from '@resume-lens/shared';
 
 import { extractResume, NetworkError } from './api/client';
 import UploadForm from './components/UploadForm';
+import LoadingState from './components/LoadingState';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +32,7 @@ const App = () => {
   return (
     <div>
       <h1>Resume Lens</h1>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <LoadingState />}
       {!isLoading && !extractionResult && <UploadForm onUpload={handleUpload} />}
       {error && <div style={{ color: 'red' }}>Error: {error}</div>}
       {extractionResult && (
