@@ -2,7 +2,7 @@
 
 A portfolio piece demonstrating production-grade AI integration at AWS scale.
 
-Upload a PDF résumé → receive structured, typed JSON extraction of the candidate's profile, including an AI-inferred seniority level computed by Claude 3 Haiku on AWS Bedrock.
+Upload a PDF résumé → receive structured, typed JSON extraction of the candidate's profile, including an AI-inferred seniority level computed by Claude Haiku on AWS Bedrock.
 
 ## 📋 Overview
 
@@ -15,13 +15,13 @@ Upload a PDF résumé → receive structured, typed JSON extraction of the candi
 
 ## 🏗️ Architecture
 
-| Component      | Technology                   | Notes                           |
-| -------------- | ---------------------------- | ------------------------------- |
-| Frontend       | React + Vite                 | Vanilla SPA, S3 + CloudFront    |
-| API            | Lambda (TypeScript)          | 512MB, ~6s round-trip latency   |
-| PDF parsing    | `pdf-parse` (npm)            | In-process, no external service |
-| AI provider    | AWS Bedrock (Claude 3 Haiku) | On-demand, IAM-authenticated    |
-| Infrastructure | AWS CDK (TypeScript)         | Single stack                    |
+| Component      | Technology                 | Notes                           |
+| -------------- | -------------------------- | ------------------------------- |
+| Frontend       | React + Vite               | Vanilla SPA, S3 + CloudFront    |
+| API            | Lambda (TypeScript)        | 512MB, ~6s round-trip latency   |
+| PDF parsing    | `unpdf` (npm)              | In-process, no external service |
+| AI provider    | AWS Bedrock (Claude Haiku) | On-demand, IAM-authenticated    |
+| Infrastructure | AWS CDK (TypeScript)       | Single stack                    |
 
 ## 📦 Monorepo Structure
 
