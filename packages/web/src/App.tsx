@@ -32,7 +32,7 @@ const App = () => {
   return (
     <div>
       <h1>Resume Lens</h1>
-      {!isLoading && <LoadingState />}
+      {isLoading && <LoadingState />}
       {!isLoading && !extractionResult && <UploadForm onUpload={handleUpload} />}
       {error && <div style={{ color: 'red' }}>Error: {error}</div>}
       {extractionResult && (
