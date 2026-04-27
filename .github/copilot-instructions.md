@@ -152,7 +152,7 @@ Tech stack is **TypeScript throughout** — frontend, backend, IaC, and shared t
 ### Frontend
 
 - **State management**: Local component state only. No Redux or context API.
-- **Styling**: Minimal inline styles or CSS modules. No external CSS frameworks.
+- **Styling**: CSS modules are the default. Inline styles permitted as an edge case. No external CSS frameworks.
 - **API client**: Single client module (`api/client.ts`) with typed methods corresponding to backend services. No direct `fetch` calls in components.
 - **Error display**: Map backend error codes to user-friendly messages in the UI. No raw error codes shown to users.
 - **Logging**: Console logs only for development. No logging of sensitive data (e.g., résumé content).
