@@ -32,7 +32,7 @@ export class ResumeLensStack extends cdk.Stack {
       memorySize: 512,
       timeout: cdk.Duration.seconds(30),
       environment: {
-        BEDROCK_MODEL_ID: 'anthropic.claude-haiku-4-5-20251001-v1:0',
+        BEDROCK_MODEL_ID: 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
       },
       loggingFormat: lambda.LoggingFormat.JSON,
       applicationLogLevelV2: lambda.ApplicationLogLevel.DEBUG,
@@ -57,7 +57,7 @@ export class ResumeLensStack extends cdk.Stack {
             actions: ['bedrock:InvokeModel'],
             resources: [
               cdk.Fn.sub(
-                'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0',
+                'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/us.anthropic.claude-haiku-4-5-20251001-v1:0',
               ),
             ],
             effect: iam.Effect.ALLOW,
