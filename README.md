@@ -32,7 +32,7 @@ graph LR
     APIGW["API Gateway<br/>POST /extract"]
     Bedrock["AWS Bedrock<br/>(Claude Haiku)"]
 
-    subgraph Lambda["Lambda (512MB)"]
+    subgraph Lambda["Lambda (Node.js)"]
         Handler["Extract Handler<br/>Orchestration"]
         Intake["Intake Service<br/>Validation"]
         Parser["Parser Service<br/>PDF to Text"]
@@ -53,7 +53,7 @@ graph LR
 
     style Bedrock fill:#01a88d
     style Lambda fill:#ee8411
-    style Result fill:#00a86b
+    style Result fill:#01a88d
 ```
 
 **Key characteristics:**
