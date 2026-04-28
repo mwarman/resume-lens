@@ -54,29 +54,29 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
 
   return (
     <div className={styles.container}>
-      {/* Header */}
-      <header className={styles.header}>
-        <div>
-          <h2 className={styles.candidateName}>{extraction.candidate.fullName}</h2>
-          <div className={styles.contactInfo}>
-            {extraction.candidate.email && <span>{extraction.candidate.email}</span>}
-            {extraction.candidate.phone && <span>{extraction.candidate.phone}</span>}
-            {extraction.candidate.location && <span>{extraction.candidate.location}</span>}
-            {extraction.candidate.linkedIn && (
-              <a href={extraction.candidate.linkedIn} target="_blank" rel="noopener noreferrer">
-                LinkedIn
-              </a>
-            )}
-          </div>
-        </div>
-      </header>
-
       {/* Two-column layout: structured data (left) and raw JSON (right) */}
       <div className={styles.mainLayout}>
         {/* Left column: Structured content */}
         <div className={styles.leftColumn}>
           {/* Main grid content */}
           <div className={styles.grid}>
+            {/* Candidate Header - at top of left column */}
+            <header className={styles.header}>
+              <div>
+                <h2 className={styles.candidateName}>{extraction.candidate.fullName}</h2>
+                <div className={styles.contactInfo}>
+                  {extraction.candidate.email && <span>{extraction.candidate.email}</span>}
+                  {extraction.candidate.phone && <span>{extraction.candidate.phone}</span>}
+                  {extraction.candidate.location && <span>{extraction.candidate.location}</span>}
+                  {extraction.candidate.linkedIn && (
+                    <a href={extraction.candidate.linkedIn} target="_blank" rel="noopener noreferrer">
+                      LinkedIn
+                    </a>
+                  )}
+                </div>
+              </div>
+            </header>
+
             {/* Summary */}
             {extraction.summary && (
               <section className={styles.section}>

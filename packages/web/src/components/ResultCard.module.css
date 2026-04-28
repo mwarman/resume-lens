@@ -5,15 +5,12 @@
   margin: 0 auto;
   padding: 32px 24px;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Header Section */
+/* Header Section - now positioned in left column */
 .header {
   border-bottom: 2px solid #e5e7eb;
   padding-bottom: 24px;
-  margin-bottom: 32px;
 }
 
 .candidateName {
