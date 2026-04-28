@@ -43,16 +43,16 @@ graph LR
     Browser <-->|Static SPA| CF
     Browser -->|POST /extract<br/>multipart/form-data| APIGW
     APIGW --> Lambda
-    Handler --> Intake
-    Handler --> Parser
-    Handler --> Extraction
+    Handler -->|1| Intake
+    Handler -->|2| Parser
+    Handler -->|3| Extraction
     Extraction --> Bedrock
     Bedrock -->|structured JSON| Extraction
     Lambda --> APIGW
     APIGW -->|ResumeExtraction<br/>application/json| Browser
 
-    style Bedrock fill:#ff9900
-    style Lambda fill:#ff9900
+    style Bedrock fill:#01a88d
+    style Lambda fill:#ee8411
     style Result fill:#00a86b
 ```
 
