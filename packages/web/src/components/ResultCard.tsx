@@ -17,20 +17,6 @@ const ConfidenceBadge = ({ level }: { level: 'high' | 'medium' | 'low' }) => {
 };
 
 /**
- * Renders the seniority level with prominent styling to indicate it's AI-inferred.
- */
-const SeniorityBadge = ({ level }: { level: string }) => {
-  return (
-    <div className={styles.senioritySection}>
-      <div className={styles.seniorityLabel}>Inferred Seniority Level</div>
-      <div className={`${styles.seniorityBadge} ${styles[`seniority-${level}`]}`}>
-        {level.charAt(0).toUpperCase() + level.slice(1)}
-      </div>
-    </div>
-  );
-};
-
-/**
  * ResultCard renders the full ResumeExtraction result in a structured, scannable layout.
  * Features:
  * - All sections displayed in a responsive grid (2-col on large screens, 1-col on small)
@@ -85,9 +71,20 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
               </section>
             )}
 
-            {/* Seniority Level - spans both columns on large screens */}
-            <section className={`${styles.section} ${styles.senioritySection}`}>
-              <SeniorityBadge level={extraction.inferredSeniorityLevel} />
+            {/* AI Inferences */}
+            <section className={styles.section} style={{ borderLeft: '3px solid #a78bfa' }}>
+              <h3 className={styles.sectionTitle}>AI Inferences</h3>
+              <div className={styles.inferencesGrid}>
+                <div className={styles.inferenceItem}>
+                  <div className={styles.inferenceLabel}>Seniority Level</div>
+                  <div
+                    className={`${styles.seniorityBadge} ${styles[`seniority-${extraction.inferredSeniorityLevel}`]}`}
+                  >
+                    {extraction.inferredSeniorityLevel.charAt(0).toUpperCase() +
+                      extraction.inferredSeniorityLevel.slice(1)}
+                  </div>
+                </div>
+              </div>
             </section>
 
             {/* Technical Skills */}
