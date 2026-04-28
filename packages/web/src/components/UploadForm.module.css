@@ -1,8 +1,18 @@
 /* UploadForm.module.css - Styling for the UploadForm component */
 
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  background: #ffffff;
+}
+
 .form {
   display: flex;
   flex-direction: column;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 .fileInput {
