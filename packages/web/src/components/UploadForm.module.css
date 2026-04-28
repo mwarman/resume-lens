@@ -1,0 +1,127 @@
+/* UploadForm.module.css - Styling for the UploadForm component */
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.fileInput {
+  display: none;
+}
+
+/* Drop Zone */
+.dropZone {
+  border: 2px dashed #e5e7eb;
+  background: #fafafa;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.dropZone:hover {
+  border-color: #667eea;
+  background: #f3f4f6;
+}
+
+.dropZone.active {
+  border: 2px dashed #667eea;
+  background: #f0f4ff;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.dropZoneText {
+  font-size: 16px;
+  color: #374151;
+  margin: 0;
+}
+
+.selectedFile {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+.selectedFileName {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Error Message */
+.errorMessage {
+  color: #dc2626;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+/* Submit Button */
+.submitButton {
+  margin-top: 16px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitButton:disabled {
+  background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dropZone {
+    padding: 32px 24px;
+  }
+
+  .dropZoneText {
+    font-size: 15px;
+  }
+
+  .submitButton {
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dropZone {
+    padding: 24px 16px;
+  }
+
+  .dropZoneText {
+    font-size: 14px;
+  }
+
+  .selectedFile {
+    font-size: 13px;
+  }
+
+  .submitButton {
+    padding: 10px 16px;
+    font-size: 14px;
+    margin-top: 12px;
+  }
+
+  .errorMessage {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+}

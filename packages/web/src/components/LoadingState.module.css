@@ -1,0 +1,123 @@
+/* LoadingState.module.css - Styling for the LoadingState component */
+
+.container {
+  padding: 24px;
+  background: #fafafa;
+  border-radius: 8px;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Skeleton Animation */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.skeleton {
+  background: #e5e7eb;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.headingSkeleton {
+  height: 24px;
+  margin-bottom: 12px;
+  width: 60%;
+}
+
+.lineSkeleton {
+  height: 12px;
+  margin-bottom: 8px;
+}
+
+.lineSkeletonFull {
+  width: 100%;
+}
+
+.lineSkeletonWide {
+  width: 90%;
+}
+
+.lineSkeletonMedium {
+  width: 85%;
+}
+
+.skeletonGroupSpacing {
+  margin-bottom: 16px;
+}
+
+.skeletonSection {
+  margin-top: 20px;
+}
+
+/* Loading Message */
+.message {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 16px;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    min-height: 300px;
+  }
+
+  .headingSkeleton {
+    height: 22px;
+    margin-bottom: 10px;
+  }
+
+  .lineSkeleton {
+    height: 11px;
+    margin-bottom: 7px;
+  }
+
+  .message {
+    font-size: 13px;
+    margin-top: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 16px;
+    min-height: 280px;
+    border-radius: 6px;
+  }
+
+  .headingSkeleton {
+    height: 20px;
+    margin-bottom: 10px;
+    width: 70%;
+  }
+
+  .lineSkeleton {
+    height: 10px;
+    margin-bottom: 6px;
+  }
+
+  .skeletonGroupSpacing {
+    margin-bottom: 12px;
+  }
+
+  .skeletonSection {
+    margin-top: 16px;
+  }
+
+  .message {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+}
