@@ -71,130 +71,144 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
         </div>
       </header>
 
-      {/* Main grid content */}
-      <div className={styles.grid}>
-        {/* Summary */}
-        {extraction.summary && (
-          <section className={styles.section}>
-            <h3 className={styles.sectionTitle}>Summary</h3>
-            <p className={styles.summaryText}>{extraction.summary}</p>
-          </section>
-        )}
+      {/* Two-column layout: structured data (left) and raw JSON (right) */}
+      <div className={styles.mainLayout}>
+        {/* Left column: Structured content */}
+        <div className={styles.leftColumn}>
+          {/* Main grid content */}
+          <div className={styles.grid}>
+            {/* Summary */}
+            {extraction.summary && (
+              <section className={styles.section}>
+                <h3 className={styles.sectionTitle}>Summary</h3>
+                <p className={styles.summaryText}>{extraction.summary}</p>
+              </section>
+            )}
 
-        {/* Seniority Level - spans both columns on large screens */}
-        <section className={`${styles.section} ${styles.senioritySection}`}>
-          <SeniorityBadge level={extraction.inferredSeniorityLevel} />
-        </section>
+            {/* Seniority Level - spans both columns on large screens */}
+            <section className={`${styles.section} ${styles.senioritySection}`}>
+              <SeniorityBadge level={extraction.inferredSeniorityLevel} />
+            </section>
 
-        {/* Technical Skills */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>Technical Skills</h3>
-            <ConfidenceBadge level={extraction.extractionMeta.confidence.skills} />
-          </div>
-          {extraction.skills.technical.length > 0 ? (
-            <div className={styles.skillsList}>
-              {extraction.skills.technical.map((skill) => (
-                <span key={skill} className={styles.skillTag}>
-                  {skill}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.emptyState}>No technical skills listed</p>
-          )}
-        </section>
-
-        {/* Soft Skills */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>Soft Skills</h3>
-            <ConfidenceBadge level={extraction.extractionMeta.confidence.skills} />
-          </div>
-          {extraction.skills.soft.length > 0 ? (
-            <div className={styles.skillsList}>
-              {extraction.skills.soft.map((skill) => (
-                <span key={skill} className={styles.skillTag}>
-                  {skill}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.emptyState}>No soft skills listed</p>
-          )}
-        </section>
-
-        {/* Experience - spans both columns */}
-        <section className={`${styles.section} ${styles.fullWidth}`}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>Experience</h3>
-            <ConfidenceBadge level={extraction.extractionMeta.confidence.experience} />
-          </div>
-          {extraction.experience.length > 0 ? (
-            <div className={styles.experienceList}>
-              {extraction.experience.map((exp, idx) => (
-                <div key={idx} className={styles.experienceItem}>
-                  <div className={styles.experienceHeader}>
-                    <h4 className={styles.jobTitle}>{exp.title}</h4>
-                    <span className={styles.company}>{exp.company}</span>
-                  </div>
-                  <div className={styles.dateRange}>{dateRange(exp.startDate, exp.endDate, exp.current)}</div>
-                  {exp.highlights.length > 0 && (
-                    <ul className={styles.highlights}>
-                      {exp.highlights.map((highlight, hIdx) => (
-                        <li key={hIdx}>{highlight}</li>
-                      ))}
-                    </ul>
-                  )}
+            {/* Technical Skills */}
+            <section className={styles.section}>
+              <div className={styles.sectionHeader}>
+                <h3 className={styles.sectionTitle}>Technical Skills</h3>
+                <ConfidenceBadge level={extraction.extractionMeta.confidence.skills} />
+              </div>
+              {extraction.skills.technical.length > 0 ? (
+                <div className={styles.skillsList}>
+                  {extraction.skills.technical.map((skill) => (
+                    <span key={skill} className={styles.skillTag}>
+                      {skill}
+                    </span>
+                  ))}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.emptyState}>No experience listed</p>
-          )}
-        </section>
+              ) : (
+                <p className={styles.emptyState}>No technical skills listed</p>
+              )}
+            </section>
 
-        {/* Education - spans both columns */}
-        <section className={`${styles.section} ${styles.fullWidth}`}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>Education</h3>
-            <ConfidenceBadge level={extraction.extractionMeta.confidence.education} />
+            {/* Soft Skills */}
+            <section className={styles.section}>
+              <div className={styles.sectionHeader}>
+                <h3 className={styles.sectionTitle}>Soft Skills</h3>
+                <ConfidenceBadge level={extraction.extractionMeta.confidence.skills} />
+              </div>
+              {extraction.skills.soft.length > 0 ? (
+                <div className={styles.skillsList}>
+                  {extraction.skills.soft.map((skill) => (
+                    <span key={skill} className={styles.skillTag}>
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.emptyState}>No soft skills listed</p>
+              )}
+            </section>
+
+            {/* Experience - spans both columns */}
+            <section className={`${styles.section} ${styles.fullWidth}`}>
+              <div className={styles.sectionHeader}>
+                <h3 className={styles.sectionTitle}>Experience</h3>
+                <ConfidenceBadge level={extraction.extractionMeta.confidence.experience} />
+              </div>
+              {extraction.experience.length > 0 ? (
+                <div className={styles.experienceList}>
+                  {extraction.experience.map((exp, idx) => (
+                    <div key={idx} className={styles.experienceItem}>
+                      <div className={styles.experienceHeader}>
+                        <h4 className={styles.jobTitle}>{exp.title}</h4>
+                        <span className={styles.company}>{exp.company}</span>
+                      </div>
+                      <div className={styles.dateRange}>{dateRange(exp.startDate, exp.endDate, exp.current)}</div>
+                      {exp.highlights.length > 0 && (
+                        <ul className={styles.highlights}>
+                          {exp.highlights.map((highlight, hIdx) => (
+                            <li key={hIdx}>{highlight}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.emptyState}>No experience listed</p>
+              )}
+            </section>
+
+            {/* Education - spans both columns */}
+            <section className={`${styles.section} ${styles.fullWidth}`}>
+              <div className={styles.sectionHeader}>
+                <h3 className={styles.sectionTitle}>Education</h3>
+                <ConfidenceBadge level={extraction.extractionMeta.confidence.education} />
+              </div>
+              {extraction.education.length > 0 ? (
+                <div className={styles.educationList}>
+                  {extraction.education.map((edu, idx) => (
+                    <div key={idx} className={styles.educationItem}>
+                      <h4 className={styles.institution}>{edu.institution}</h4>
+                      <div className={styles.degreeInfo}>
+                        {edu.degree && <span className={styles.degree}>{edu.degree}</span>}
+                        {edu.field && <span className={styles.field}>{edu.field}</span>}
+                        {edu.graduationYear && <span className={styles.year}>{edu.graduationYear}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.emptyState}>No education listed</p>
+              )}
+            </section>
+
+            {/* Certifications - spans both columns */}
+            {extraction.certifications.length > 0 && (
+              <section className={`${styles.section} ${styles.fullWidth}`}>
+                <h3 className={styles.sectionTitle}>Certifications</h3>
+                <div className={styles.certificationsList}>
+                  {extraction.certifications.map((cert, idx) => (
+                    <div key={idx} className={styles.certificationItem}>
+                      <h4 className={styles.certName}>{cert.name}</h4>
+                      <div className={styles.certInfo}>
+                        {cert.issuer && <span>{cert.issuer}</span>}
+                        {cert.year && <span>{cert.year}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
-          {extraction.education.length > 0 ? (
-            <div className={styles.educationList}>
-              {extraction.education.map((edu, idx) => (
-                <div key={idx} className={styles.educationItem}>
-                  <h4 className={styles.institution}>{edu.institution}</h4>
-                  <div className={styles.degreeInfo}>
-                    {edu.degree && <span className={styles.degree}>{edu.degree}</span>}
-                    {edu.field && <span className={styles.field}>{edu.field}</span>}
-                    {edu.graduationYear && <span className={styles.year}>{edu.graduationYear}</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.emptyState}>No education listed</p>
-          )}
-        </section>
+        </div>
 
-        {/* Certifications - spans both columns */}
-        {extraction.certifications.length > 0 && (
-          <section className={`${styles.section} ${styles.fullWidth}`}>
-            <h3 className={styles.sectionTitle}>Certifications</h3>
-            <div className={styles.certificationsList}>
-              {extraction.certifications.map((cert, idx) => (
-                <div key={idx} className={styles.certificationItem}>
-                  <h4 className={styles.certName}>{cert.name}</h4>
-                  <div className={styles.certInfo}>
-                    {cert.issuer && <span>{cert.issuer}</span>}
-                    {cert.year && <span>{cert.year}</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        {/* Right column: Raw JSON */}
+        <div className={styles.rightColumn}>
+          <div className={styles.jsonContainer}>
+            <h3 className={styles.jsonTitle}>Raw API Response</h3>
+            <pre className={styles.jsonDisplay}>{JSON.stringify(extraction, null, 2)}</pre>
+          </div>
+        </div>
       </div>
 
       {/* Metadata Section - Collapsible */}
