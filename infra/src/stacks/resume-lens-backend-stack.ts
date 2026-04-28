@@ -8,23 +8,24 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 
 /**
- * ResumeLensStack
+ * ResumeLensBackendStack
  *
- * Provisions all AWS resources for the resume-lens application:
- * - Lambda function for PDF extraction
- * - API Gateway for HTTP access
- * - S3 bucket for static website hosting
- * - CloudFront distribution for CDN
- * - IAM roles and policies
+ * Provisions the backend AWS resources for the resume-lens application:
+ * - Lambda function for PDF extraction via Claude on Bedrock
+ * - API Gateway for HTTP access to the extraction service
+ * - IAM roles and policies for Bedrock access
+ *
+ * Outputs:
+ * - ApiGatewayUrl: The base URL of the API Gateway (used by frontend for API calls)
  */
-export class ResumeLensStack extends cdk.Stack {
-  private extractFunction: NodejsFunction;
+export class ResumeLensBackendStack extends cdk.Stack {
+  public readonly apiGatewayUrl: string;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     // Create the extract Lambda function
-    this.extractFunction = new NodejsFunction(this, 'ExtractFunction', {
+    const extractFunction = new NodejsFunction(this, 'ExtractFunction', {
       functionName: 'resume-lens-extract',
       runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'handler',
@@ -49,8 +50,8 @@ export class ResumeLensStack extends cdk.Stack {
     });
 
     // Attach IAM policy for Bedrock access (AD-002, AD-003)
-    // Grant bedrock:InvokeModel permission scoped to the specific model ARN only
-    this.extractFunction.role?.attachInlinePolicy(
+    // Grant bedrock:InvokeModel permission to invoke the Claude model
+    extractFunction.role?.attachInlinePolicy(
       new iam.Policy(this, 'BedrockInvokeModelPolicy', {
         statements: [
           new iam.PolicyStatement({
@@ -74,7 +75,7 @@ export class ResumeLensStack extends cdk.Stack {
 
     // Add the /extract resource with POST method
     const extractResource = api.root.addResource('extract');
-    const lambdaIntegration = new apigateway.LambdaIntegration(this.extractFunction);
+    const lambdaIntegration = new apigateway.LambdaIntegration(extractFunction);
     extractResource.addMethod('POST', lambdaIntegration, {
       methodResponses: [
         {
@@ -87,15 +88,21 @@ export class ResumeLensStack extends cdk.Stack {
     });
 
     // Enable CORS on the /extract resource
+    // Initially allows all origins for the initial deployment.
+    // After the frontend stack is deployed, update this to the CloudFront domain for security:
+    // allowOrigins: [`https://{cloudFrontDomain}`]
     extractResource.addCorsPreflight({
       allowOrigins: ['*'],
       allowMethods: ['POST'],
       allowHeaders: ['Content-Type'],
     });
 
-    // Output the API Gateway base URL
+    // Store the API Gateway URL for use by the frontend stack
+    this.apiGatewayUrl = api.url;
+
+    // Output the API Gateway URL (will be used by frontend stack during build)
     new cdk.CfnOutput(this, 'ApiGatewayUrl', {
-      description: 'API Gateway base URL',
+      description: 'API Gateway base URL for resume extraction',
       value: api.url,
       exportName: 'ResumeLensApiUrl',
     });
