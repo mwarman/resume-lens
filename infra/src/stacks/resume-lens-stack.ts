@@ -55,11 +55,7 @@ export class ResumeLensStack extends cdk.Stack {
         statements: [
           new iam.PolicyStatement({
             actions: ['bedrock:InvokeModel'],
-            resources: [
-              cdk.Fn.sub(
-                'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/us.anthropic.claude-haiku-4-5-20251001-v1:0',
-              ),
-            ],
+            resources: ['*'],
             effect: iam.Effect.ALLOW,
           }),
         ],
