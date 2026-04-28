@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import type { ResumeExtraction } from '@resume-lens/shared';
+import { ResumeLensError } from '@resume-lens/shared';
 
 import { extractResume, NetworkError } from './api/client';
+import { getErrorMessage, NETWORK_ERROR_MESSAGE } from './utils/error-messages';
 import UploadForm from './components/UploadForm';
 import LoadingState from './components/LoadingState';
 import ResultCard from './components/ResultCard';
@@ -12,22 +14,33 @@ const App = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleUpload = async (file: File) => {
-    setIsLoading(true);
-    setError(null);
     try {
       const result = await extractResume(file);
       setExtractionResult(result);
     } catch (err) {
-      if (err instanceof NetworkError) {
-        setError(`Network error: ${err.message}`);
+      let errorMessage = 'An unexpected error occurred';
+
+      if (err instanceof ResumeLensError) {
+        errorMessage = getErrorMessage(err.code);
+      } else if (err instanceof NetworkError) {
+        errorMessage = NETWORK_ERROR_MESSAGE;
       } else if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An unexpected error occurred');
+        errorMessage = err.message;
       }
+
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  /**
+   * Called when user starts form submission.
+   * Clears any existing errors so we have a clean state for the new request.
+   */
+  const handleStartSubmit = () => {
+    setError(null);
+    setIsLoading(true);
   };
 
   /**
@@ -42,8 +55,9 @@ const App = () => {
     <div>
       <h1>Resume Lens</h1>
       {isLoading && <LoadingState />}
-      {!isLoading && !extractionResult && <UploadForm onUpload={handleUpload} />}
-      {error && <div style={{ color: 'red' }}>Error: {error}</div>}
+      {!isLoading && !extractionResult && (
+        <UploadForm onUpload={handleUpload} onStartSubmit={handleStartSubmit} error={error} />
+      )}
       {extractionResult && <ResultCard extraction={extractionResult} onReset={handleReset} />}
     </div>
   );

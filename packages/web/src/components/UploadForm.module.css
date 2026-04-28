@@ -50,9 +50,15 @@
 
 /* Error Message */
 .errorMessage {
-  color: #dc2626;
-  margin-top: 12px;
-  font-size: 14px;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  margin-top: 16px;
+  padding: 16px;
+  font-size: 16px;
+  line-height: 1.5;
+  border-radius: 6px;
+  font-weight: 500;
 }
 
 /* Submit Button */
