@@ -37,8 +37,8 @@ graph LR
     Bedrock["AWS Bedrock<br/>(Claude Haiku)"]
     Result["ResumeExtraction<br/>(typed JSON)"]
 
-    Browser -->|multipart/form-data| CF
-    CF --> APIGW
+    Browser -->|Static SPA| CF
+    Browser -->|POST /extract<br/>multipart/form-data| APIGW
     APIGW --> Lambda
     Lambda --> Intake
     Intake --> Parser
@@ -46,8 +46,8 @@ graph LR
     Extraction --> Bedrock
     Bedrock -->|structured JSON| Extraction
     Extraction --> Result
-    Result -->|API Gateway| CF
-    CF -->|ResultCard| Browser
+    Result -->|JSON response| APIGW
+    APIGW -->|Direct to browser| Browser
 
     style Bedrock fill:#ff9900
     style Lambda fill:#ff9900
