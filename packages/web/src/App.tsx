@@ -4,6 +4,7 @@ import { ResumeLensError } from '@resume-lens/shared';
 
 import { extractResume, NetworkError } from './api/client';
 import { getErrorMessage, NETWORK_ERROR_MESSAGE } from './utils/error-messages';
+import Header from './components/Header';
 import UploadForm from './components/UploadForm';
 import LoadingState from './components/LoadingState';
 import ResultCard from './components/ResultCard';
@@ -53,7 +54,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Resume Lens</h1>
+      <Header />
       {isLoading && <LoadingState />}
       {!isLoading && !extractionResult && (
         <UploadForm onUpload={handleUpload} onStartSubmit={handleStartSubmit} error={error} />
