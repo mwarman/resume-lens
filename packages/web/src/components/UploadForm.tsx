@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import styles from './UploadForm.module.css';
 
 interface UploadFormProps {
   onUpload: (file: File) => Promise<void>;
@@ -93,58 +94,27 @@ const UploadForm = ({ onUpload }: UploadFormProps) => {
   const isButtonDisabled = !selectedFile || isSubmitting;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleInputChange} style={{ display: 'none' }} />
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleInputChange} className={styles.fileInput} />
 
       <div
+        className={`${styles.dropZone} ${isDragActive ? styles.active : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={handleClickBrowse}
-        style={{
-          border: isDragActive ? '2px dashed blue' : '2px dashed #ccc',
-          backgroundColor: isDragActive ? '#f0f8ff' : '#fafafa',
-          padding: '40px',
-          textAlign: 'center',
-          cursor: 'pointer',
-          borderRadius: '8px',
-          transition: 'all 0.2s ease',
-        }}
       >
-        <p>Drag and drop your PDF résumé here, or click to browse</p>
+        <p className={styles.dropZoneText}>Drag and drop your PDF résumé here, or click to browse</p>
         {selectedFile && !error && (
-          <p style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>
-            Selected: <strong>{selectedFile.name}</strong>
+          <p className={styles.selectedFile}>
+            Selected: <span className={styles.selectedFileName}>{selectedFile.name}</span>
           </p>
         )}
       </div>
 
-      {error && (
-        <div
-          style={{
-            color: '#d32f2f',
-            marginTop: '12px',
-            fontSize: '14px',
-          }}
-        >
-          {error}
-        </div>
-      )}
+      {error && <div className={styles.errorMessage}>{error}</div>}
 
-      <button
-        type="submit"
-        disabled={isButtonDisabled}
-        style={{
-          marginTop: '16px',
-          padding: '10px 20px',
-          backgroundColor: isButtonDisabled ? '#ccc' : '#1976d2',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: isButtonDisabled ? 'not-allowed' : 'pointer',
-          fontSize: '16px',
-        }}
-      >
+      <button type="submit" disabled={isButtonDisabled} className={styles.submitButton}>
         {isSubmitting ? 'Extracting...' : 'Extract Resume'}
       </button>
     </form>
