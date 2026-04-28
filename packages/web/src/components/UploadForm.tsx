@@ -106,30 +106,32 @@ const UploadForm = ({ onUpload, onStartSubmit, error: parentError }: UploadFormP
   const isButtonDisabled = !selectedFile || isSubmitting;
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
-      <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleInputChange} className={styles.fileInput} />
+    <div className={styles.container}>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleInputChange} className={styles.fileInput} />
 
-      <div
-        className={`${styles.dropZone} ${isDragActive ? styles.active : ''}`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={handleClickBrowse}
-      >
-        <p className={styles.dropZoneText}>Drag and drop your PDF résumé here, or click to browse</p>
-        {selectedFile && !localError && (
-          <p className={styles.selectedFile}>
-            Selected: <span className={styles.selectedFileName}>{selectedFile.name}</span>
-          </p>
-        )}
-      </div>
+        <div
+          className={`${styles.dropZone} ${isDragActive ? styles.active : ''}`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={handleClickBrowse}
+        >
+          <p className={styles.dropZoneText}>Drag and drop your PDF résumé here, or click to browse</p>
+          {selectedFile && !localError && (
+            <p className={styles.selectedFile}>
+              Selected: <span className={styles.selectedFileName}>{selectedFile.name}</span>
+            </p>
+          )}
+        </div>
 
-      {displayError && <div className={styles.errorMessage}>{displayError}</div>}
+        {displayError && <div className={styles.errorMessage}>{displayError}</div>}
 
-      <button type="submit" disabled={isButtonDisabled} className={styles.submitButton}>
-        {isSubmitting ? 'Extracting...' : 'Extract Resume'}
-      </button>
-    </form>
+        <button type="submit" disabled={isButtonDisabled} className={styles.submitButton}>
+          {isSubmitting ? 'Extracting...' : 'Extract Resume'}
+        </button>
+      </form>
+    </div>
   );
 };
 

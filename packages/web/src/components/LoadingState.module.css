@@ -1,14 +1,57 @@
 /* LoadingState.module.css - Styling for the LoadingState component */
 
 .container {
-  padding: 24px;
-  background: #fafafa;
-  border-radius: 8px;
-  min-height: 350px;
+  padding: 32px 24px;
+  background: #ffffff;
+  min-height: 500px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+/* Overlay message - centered on top of skeleton */
+.messageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.message {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #667eea;
+  text-align: center;
+}
+
+/* Content wrapper for two-column layout */
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  opacity: 0.3;
+}
+
+.leftColumn {
+  min-width: 0;
+}
+
+.rightColumn {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header skeleton */
+.headerSkeleton {
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 24px;
 }
 
 /* Skeleton Animation */
@@ -51,6 +94,11 @@
   width: 85%;
 }
 
+.lineSkeletonShort {
+  width: 50%;
+  margin-bottom: 16px;
+}
+
 .skeletonGroupSpacing {
   margin-bottom: 16px;
 }
@@ -59,19 +107,28 @@
   margin-top: 20px;
 }
 
-/* Loading Message */
-.message {
-  font-size: 14px;
-  color: #6b7280;
-  margin-top: 16px;
-  font-style: italic;
+/* Large JSON skeleton block */
+.jsonSkeleton {
+  flex: 1;
+  min-height: 300px;
+  border-radius: 8px;
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .contentWrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
-    padding: 20px;
-    min-height: 300px;
+    padding: 24px 16px;
+    min-height: 400px;
+  }
+
+  .message {
+    font-size: 1.75rem;
   }
 
   .headingSkeleton {
@@ -84,23 +141,25 @@
     margin-bottom: 7px;
   }
 
-  .message {
-    font-size: 13px;
-    margin-top: 14px;
+  .jsonSkeleton {
+    min-height: 250px;
   }
 }
 
 @media (max-width: 480px) {
   .container {
     padding: 16px;
-    min-height: 280px;
+    min-height: 350px;
     border-radius: 6px;
+  }
+
+  .message {
+    font-size: 1.5rem;
   }
 
   .headingSkeleton {
     height: 20px;
-    margin-bottom: 10px;
-    width: 70%;
+    margin-bottom: 9px;
   }
 
   .lineSkeleton {
@@ -108,16 +167,7 @@
     margin-bottom: 6px;
   }
 
-  .skeletonGroupSpacing {
-    margin-bottom: 12px;
-  }
-
-  .skeletonSection {
-    margin-top: 16px;
-  }
-
-  .message {
-    font-size: 12px;
-    margin-top: 12px;
+  .jsonSkeleton {
+    min-height: 200px;
   }
 }
