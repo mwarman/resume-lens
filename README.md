@@ -30,17 +30,18 @@ graph LR
     Browser["Browser<br/>(React SPA)"]
     CF["CloudFront<br/>(HTTPS)"]
     APIGW["API Gateway<br/>POST /extract"]
-    Lambda["Lambda<br/>(512MB)"]
-    Intake["Intake Service<br/>Validate file type + size"]
-    Parser["Parser Service<br/>PDF → raw text"]
-    Extraction["Extraction Service<br/>Prompt + Bedrock call"]
     Bedrock["AWS Bedrock<br/>(Claude Haiku)"]
-    Result["ResumeExtraction<br/>(typed JSON)"]
+
+    subgraph Lambda["Lambda (512MB)"]
+        Intake["Intake Service<br/>Validate file type + size"]
+        Parser["Parser Service<br/>PDF → raw text"]
+        Extraction["Extraction Service<br/>Prompt + Bedrock call"]
+        Result["ResumeExtraction<br/>(typed JSON)"]
+    end
 
     Browser <-->|Static SPA| CF
     Browser -->|POST /extract<br/>multipart/form-data| APIGW
-    APIGW --> Lambda
-    Lambda --> Intake
+    APIGW --> Intake
     Intake --> Parser
     Parser --> Extraction
     Extraction --> Bedrock
@@ -50,7 +51,7 @@ graph LR
     APIGW -->|Direct to browser| Browser
 
     style Bedrock fill:#ff9900
-    style Lambda fill:#ff9900
+    style Lambda fill:#e1f5ff
     style Result fill:#00a86b
 ```
 
