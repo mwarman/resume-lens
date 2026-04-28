@@ -33,22 +33,21 @@ graph LR
     Bedrock["AWS Bedrock<br/>(Claude Haiku)"]
 
     subgraph Lambda["Lambda (512MB)"]
-        Intake["Intake Service<br/>Validate file type + size"]
-        Parser["Parser Service<br/>PDF → raw text"]
-        Extraction["Extraction Service<br/>Prompt + Bedrock call"]
+        Intake["Intake Service<br/>Validation"]
+        Parser["Parser Service<br/>PDF to Text"]
+        Extraction["Extraction Service<br/>Bedrock Wrapper"]
         Result["ResumeExtraction<br/>(typed JSON)"]
     end
 
     Browser <-->|Static SPA| CF
     Browser -->|POST /extract<br/>multipart/form-data| APIGW
-    APIGW --> Intake
+    APIGW --> Lambda
     Intake --> Parser
     Parser --> Extraction
     Extraction --> Bedrock
     Bedrock -->|structured JSON| Extraction
-    Extraction --> Result
-    Result -->|JSON response| APIGW
-    APIGW -->|Direct to browser| Browser
+    Lambda --> APIGW
+    APIGW -->|ResumeExtraction<br/>application/json| Browser
 
     style Bedrock fill:#ff9900
     style Lambda fill:#ff9900
