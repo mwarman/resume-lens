@@ -33,6 +33,7 @@ graph LR
     Bedrock["AWS Bedrock<br/>(Claude Haiku)"]
 
     subgraph Lambda["Lambda (512MB)"]
+        Handler["Extract Handler<br/>Orchestration"]
         Intake["Intake Service<br/>Validation"]
         Parser["Parser Service<br/>PDF to Text"]
         Extraction["Extraction Service<br/>Bedrock Wrapper"]
@@ -42,8 +43,9 @@ graph LR
     Browser <-->|Static SPA| CF
     Browser -->|POST /extract<br/>multipart/form-data| APIGW
     APIGW --> Lambda
-    Intake --> Parser
-    Parser --> Extraction
+    Handler --> Intake
+    Handler --> Parser
+    Handler --> Extraction
     Extraction --> Bedrock
     Bedrock -->|structured JSON| Extraction
     Lambda --> APIGW
