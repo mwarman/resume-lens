@@ -171,7 +171,7 @@ See [Project Overview](./docs/project-overview.md) for detailed structure and re
 
 - The Lambda handler is a plain TypeScript function — no framework overhead.
 - API responses are typed against `@resume-lens/shared` in the frontend, catching contract violations at compile time.
-- Local invocation uses your AWS credentials directly; Bedrock calls are authenticated via IAM.
+- Local development works best deploying the backend to AWS and configuring the frontend with the API Gateway base URL; however, tooling like LocalStack could enable a complete local runtime environment.
 
 ---
 
@@ -195,15 +195,12 @@ See [Project Overview](./docs/project-overview.md) for detailed structure and re
 2. **Deploy the stack**
 
    ```bash
-   cd infra
-   npm run cdk:deploy
+   npm run cdk deploy --workspace infra -- ResumeLensBackendStack
    ```
 
-   The CDK stack provisions:
+   The Backend CDK stack provisions:
    - Lambda function with Bedrock IAM permissions
    - API Gateway with POST /extract route
-   - S3 bucket and CloudFront distribution for the React frontend
-   - All necessary IAM roles and policies
 
 3. **Deploy the frontend**
 
@@ -211,8 +208,12 @@ See [Project Overview](./docs/project-overview.md) for detailed structure and re
 
    ```bash
    npm run --workspace=packages/web build
-   aws s3 sync packages/web/dist/ s3://<BUCKET_NAME>/ --delete
+   npm run cdk deploy --workspace infra -- ResumeLensFrontendStack
    ```
+
+   The Frontend CDK stack provisions:
+   - S3 bucket and CloudFront distribution for the React frontend
+   - All necessary IAM roles and policies
 
 4. **Access the app**
 
