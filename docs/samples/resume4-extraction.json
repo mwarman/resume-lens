@@ -1,0 +1,80 @@
+{
+  "candidate": {
+    "fullName": "Alex Rivera",
+    "email": "alex.rivera.student@email.com",
+    "phone": "(555) 000-9999",
+    "location": "Boulder Falls, CA",
+    "linkedIn": null
+  },
+  "summary": "Motivated high school senior with 2 years of customer service experience, strong communication skills, and proven leadership abilities. Currently working as a Team Member/Shift Lead Trainee at Main Street Smoothies & Café while maintaining a 3.6 GPA and actively volunteering in the community.",
+  "inferredSeniorityLevel": "junior",
+  "skills": {
+    "technical": ["Microsoft Office (Word, Excel)", "Social Media Management", "Basic Math/Accounting", "POS System"],
+    "soft": [
+      "Active Listening",
+      "Conflict Resolution",
+      "Team Collaboration",
+      "Punctuality",
+      "Quick Learner",
+      "Adaptability",
+      "Customer Service"
+    ]
+  },
+  "experience": [
+    {
+      "company": "Main Street Smoothies & Café",
+      "title": "Team Member / Shift Lead Trainee",
+      "startDate": "August 2024",
+      "endDate": null,
+      "current": true,
+      "highlights": [
+        "Provide friendly, fast-paced service to an average of 100+ customers per shift, ensuring high satisfaction and repeat business",
+        "Accurately manage a cash drawer and process transactions using a POS system, maintaining a 100% balance record",
+        "Multi-task between food preparation, inventory restocking, and maintaining a sanitized workspace according to health safety standards",
+        "Entrusted to open the shop independently and assist in training 3 new hires on beverage preparation and customer service protocols",
+        "Demonstrated exceptional reliability by maintaining a perfect attendance record while balancing a full-time academic schedule"
+      ]
+    },
+    {
+      "company": "Community Food Bank",
+      "title": "Volunteer",
+      "startDate": "2024",
+      "endDate": null,
+      "current": true,
+      "highlights": [
+        "Organize and sort 500+ lbs of donations monthly",
+        "Assist in distributing supplies to local families in need"
+      ]
+    },
+    {
+      "company": "Westside High School",
+      "title": "Peer Tutor - Math & History",
+      "startDate": "2025",
+      "endDate": null,
+      "current": true,
+      "highlights": [
+        "Assist underclassmen with homework assignments and exam preparation",
+        "Tutor twice a week after school"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Westside High School",
+      "degree": null,
+      "field": null,
+      "graduationYear": 2027
+    }
+  ],
+  "certifications": [],
+  "extractionMeta": {
+    "modelId": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "processedAt": "2026-04-29T10:15:36.178Z",
+    "sourceFormat": "pdf",
+    "confidence": {
+      "experience": "high",
+      "education": "medium",
+      "skills": "high"
+    }
+  }
+}
