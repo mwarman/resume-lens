@@ -1,7 +1,5 @@
 import { ResumeLensErrorCode, ResumeLensError } from '@resume-lens/shared';
-
-const PDF_MIME_TYPE = 'application/pdf';
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+import { PDF_MIME_TYPE, MAX_FILE_SIZE } from '../utils/constants';
 
 /**
  * Validates file type and size constraints.

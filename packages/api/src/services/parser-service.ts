@@ -1,12 +1,7 @@
 import { extractText } from 'unpdf';
 
 import { ResumeLensErrorCode, ResumeLensError } from '@resume-lens/shared';
-
-/**
- * Minimum text length threshold to detect image-only PDFs.
- * PDFs with extracted text below this threshold after trimming are considered unparseable (e.g., scanned documents).
- */
-const MIN_TEXT_LENGTH = 10;
+import { MIN_TEXT_LENGTH } from '../utils/constants';
 
 /**
  * Parses a PDF buffer and extracts raw text.
