@@ -1,0 +1,124 @@
+{
+  "candidate": {
+    "fullName": "Joseph Smith",
+    "email": "j.jones@example.com",
+    "phone": "+1-987-765-4321",
+    "location": null,
+    "linkedIn": "http://linkedin.com/in/jjones"
+  },
+  "summary": "Experienced technology leader with 18+ years of software engineering and organizational leadership expertise. Proven track record scaling engineering organizations, implementing architectural solutions, and driving business growth through full-stack engineering capabilities and people leadership.",
+  "inferredSeniorityLevel": "principal",
+  "skills": {
+    "technical": [
+      "AWS Architecture",
+      "Systems Architecture",
+      "Full-Stack Engineering",
+      "React",
+      "Ionic Framework",
+      "NextJS",
+      "Serverless Framework",
+      "NestJS",
+      "ExpressJS",
+      "Node.js",
+      "AWS CDK",
+      "AWS Services",
+      "Containers",
+      "SQL",
+      "NoSQL Databases",
+      "JavaScript",
+      "TypeScript",
+      "Java",
+      "Python",
+      "Microservices",
+      "CI/CD Pipelines"
+    ],
+    "soft": [
+      "People Leadership",
+      "Mentoring",
+      "Growth",
+      "Account Management",
+      "Customer Success Strategy",
+      "Agile Processes",
+      "Team Leadership",
+      "Strategic Planning"
+    ]
+  },
+  "experience": [
+    {
+      "company": "Big Tuna Technologies",
+      "title": "VP Enterprise Systems",
+      "startDate": "Aug 2023",
+      "endDate": null,
+      "current": true,
+      "highlights": [
+        "Scaled engineering organization from 20 to 120+ members across international locations within 18 months",
+        "Spearheaded mentoring programs for engineering managers and senior staff, improving retention rates by 30%",
+        "Reduced voluntary turnover to under 5%",
+        "Restructured the department, implementing Agile processes that improved project delivery speed by 25%"
+      ]
+    },
+    {
+      "company": "Chopped Salad Consulting",
+      "title": "Director of Customer Solutions",
+      "startDate": "Jan 2018",
+      "endDate": "Jul 2023",
+      "current": false,
+      "highlights": [
+        "Increased client retention by 32% by implementing proactive account management systems and tailored customer success strategies",
+        "Drove a 24% increase in sales by developing a customer-focused consulting strategy",
+        "Transformed reactive customer support into a proactive advisory model, reducing service complaints by 25%",
+        "Spearheaded the development of new service offerings, generating new revenue within the first year"
+      ]
+    },
+    {
+      "company": "Fun Monkey Solutions",
+      "title": "Senior Software Engineer",
+      "startDate": "Jun 2005",
+      "endDate": "Dec 2017",
+      "current": false,
+      "highlights": [
+        "Led a team of 7 in designing a scalable microservices architecture, accelerating data processing by 37%",
+        "Reduced database response time by 24%",
+        "Migrated 10+ legacy on-premise applications to AWS, reducing infrastructure costs by 30%",
+        "Improved overall system reliability",
+        "Delivered a client-facing web portal using React and Python 2 months ahead of schedule, resulting in a 15% increase in user retention",
+        "Developed a HIPAA-compliant migration script to upgrade client systems, successfully transitioning 50+ data nodes with zero downtime"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "North Carolina State University",
+      "degree": "Bachelor of Science",
+      "field": "Computer Electrical Engineering",
+      "graduationYear": 2005
+    }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified Solutions Architect - Professional",
+      "issuer": "AWS",
+      "year": null
+    },
+    {
+      "name": "AWS Certified DevOps Engineer - Professional",
+      "issuer": "AWS",
+      "year": null
+    },
+    {
+      "name": "Certified Secure Software Lifecycle Professional",
+      "issuer": null,
+      "year": null
+    }
+  ],
+  "extractionMeta": {
+    "modelId": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "processedAt": "2026-04-29T09:48:59.748Z",
+    "sourceFormat": "pdf",
+    "confidence": {
+      "experience": "high",
+      "education": "medium",
+      "skills": "high"
+    }
+  }
+}

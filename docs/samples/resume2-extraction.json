@@ -1,0 +1,103 @@
+{
+  "candidate": {
+    "fullName": "Jordan M. Smith",
+    "email": "jordan.smith.nurse@email.com",
+    "phone": "(555) 012-3456",
+    "location": "City, State",
+    "linkedIn": "LinkedIn.com/in/jordanmsmith"
+  },
+  "summary": "Dedicated Registered Nurse with nearly 2 years of experience in Medical-Surgical/Telemetry units, recognized for strong clinical judgment, multidisciplinary collaboration, and compassionate patient care. Proven ability to manage complex acute care patient loads, mentor nursing students, and implement quality improvement initiatives. Currently working as Staff Nurse at City General Hospital while completing a nurse residency program focused on evidence-based practice and leadership development.",
+  "inferredSeniorityLevel": "junior",
+  "skills": {
+    "technical": [
+      "Acute Care",
+      "Telemetry Monitoring",
+      "Wound Care",
+      "IV Insertion",
+      "Medication Administration",
+      "Epic EHR",
+      "Cerner EHR",
+      "Alaris Pumps",
+      "Patient Controlled Analgesia (PCA)",
+      "EKG Rhythm Monitoring"
+    ],
+    "soft": [
+      "Clinical Judgment",
+      "Multidisciplinary Collaboration",
+      "Patient Advocacy",
+      "Family Education",
+      "Crisis Intervention",
+      "Mentoring",
+      "Time Management",
+      "Leadership"
+    ]
+  },
+  "experience": [
+    {
+      "company": "City General Hospital",
+      "title": "Staff Nurse – Medical-Surgical/Telemetry Unit",
+      "startDate": "July 2024",
+      "endDate": null,
+      "current": true,
+      "highlights": [
+        "Manage 5–6 acute care patients with conditions including post-operative recovery, CHF, COPD, and diabetes",
+        "Monitor EKG rhythms for telemetry patients and escalate critical cardiac changes",
+        "Reduced unit-wide hospital-acquired pressure injury rates by 15% through peer-led initiative",
+        "Serve as Preceptor for senior nursing students",
+        "Achieved 98% patient satisfaction rating on post-discharge surveys"
+      ]
+    },
+    {
+      "company": "Mountain View Health System",
+      "title": "Nurse Residency Program (General Medicine)",
+      "startDate": "July 2024",
+      "endDate": "July 2025",
+      "current": false,
+      "highlights": [
+        "Completed 12-month rigorous residency focused on critical thinking and evidence-based practice",
+        "Presented capstone project on reducing medication errors through standardized bedside shift report",
+        "Capstone project was adopted as unit policy"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "State University School of Nursing",
+      "degree": "Bachelor of Science in Nursing (BSN)",
+      "field": "Nursing",
+      "graduationYear": 2024
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Registered Nurse (RN)",
+      "issuer": "State Board of Nursing",
+      "year": 2024
+    },
+    {
+      "name": "BLS (Basic Life Support)",
+      "issuer": "American Heart Association",
+      "year": 2026
+    },
+    {
+      "name": "ACLS (Advanced Cardiac Life Support)",
+      "issuer": "American Heart Association",
+      "year": 2026
+    },
+    {
+      "name": "CMSRN (Certified Medical-Surgical Registered Nurse)",
+      "issuer": "Academy of Medical-Surgical Nurses",
+      "year": null
+    }
+  ],
+  "extractionMeta": {
+    "modelId": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "processedAt": "2026-04-29T10:05:58.403Z",
+    "sourceFormat": "pdf",
+    "confidence": {
+      "experience": "medium",
+      "education": "medium",
+      "skills": "high"
+    }
+  }
+}

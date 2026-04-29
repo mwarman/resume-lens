@@ -1,0 +1,113 @@
+{
+  "candidate": {
+    "fullName": "Lucas Oliveira",
+    "email": "lucas.oliveira.dev@email.com",
+    "phone": "+55 11 9XXXX-XXXX",
+    "location": "São Paulo, Brazil",
+    "linkedIn": "https://linkedin.com/in/lucasoliveiradev"
+  },
+  "summary": "Strategic Full-Stack Software Engineer and Consultant with 5 years of experience delivering scalable web applications and enterprise solutions. Expert in JavaScript and TypeScript with deep proficiency in React, Node.js, and Vue.js. Proven track record of helping clients optimize legacy systems, migrate to cloud-native architectures, and accelerate product delivery cycles.",
+  "inferredSeniorityLevel": "senior",
+  "skills": {
+    "technical": [
+      "JavaScript (ES6+)",
+      "TypeScript",
+      "HTML5",
+      "CSS3/Sass",
+      "React",
+      "Next.js",
+      "Vue.js",
+      "Node.js",
+      "Express",
+      "NestJS",
+      "AWS",
+      "Lambda",
+      "S3",
+      "EC2",
+      "Docker",
+      "GitHub Actions",
+      "PostgreSQL",
+      "MongoDB",
+      "Redis"
+    ],
+    "soft": [
+      "Stakeholder Management",
+      "Agile Methodology",
+      "Scrum",
+      "System Architecture",
+      "Technical Auditing",
+      "Mentoring",
+      "Communication",
+      "Leadership"
+    ]
+  },
+  "experience": [
+    {
+      "company": "TechFlow Solutions",
+      "title": "Senior Consultant / Software Engineer",
+      "startDate": "2023-01",
+      "endDate": null,
+      "current": true,
+      "highlights": [
+        "Lead technical discovery and implementation for high-growth startups and mid-market enterprises",
+        "Refactored monolithic PHP application into microservices architecture using Node.js and NestJS, achieving 40% improvement in system response times",
+        "Orchestrated front-end migration from legacy jQuery to React/Next.js, improving SEO scores and mobile conversion rates by 22%",
+        "Provided strategic technical debt assessments and roadmap planning for C-suite stakeholders"
+      ]
+    },
+    {
+      "company": "Innovate Digital",
+      "title": "Software Engineer",
+      "startDate": "2020-06",
+      "endDate": "2022-12",
+      "current": false,
+      "highlights": [
+        "Developed and maintained complex user interfaces using Vue.js and Vuex for FinTech dashboard serving 50k+ active users",
+        "Integrated third-party APIs and payment gateways (Stripe, PagSeguro) ensuring high security and transaction reliability",
+        "Built reusable internal component library, reducing front-end development time by 30%",
+        "Mentored 3 junior developers through code reviews and pair programming"
+      ]
+    },
+    {
+      "company": "StartUp Hub SP",
+      "title": "Junior Software Developer",
+      "startDate": "2019-06",
+      "endDate": "2020-05",
+      "current": false,
+      "highlights": [
+        "Contributed to development of real-time messaging app using JavaScript and Socket.io",
+        "Assisted in transitioning codebase from JavaScript to TypeScript to enhance type safety and maintainability"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Universidade de São Paulo (USP)",
+      "degree": "Bachelor of Science",
+      "field": "Computer Science",
+      "graduationYear": 2019
+    }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified Developer – Associate",
+      "issuer": "Amazon Web Services",
+      "year": null
+    },
+    {
+      "name": "Meta Front-End Developer Professional Certificate",
+      "issuer": "Coursera/Meta",
+      "year": null
+    }
+  ],
+  "extractionMeta": {
+    "modelId": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "processedAt": "2026-04-29T10:10:35.475Z",
+    "sourceFormat": "pdf",
+    "confidence": {
+      "experience": "high",
+      "education": "medium",
+      "skills": "high"
+    }
+  }
+}
