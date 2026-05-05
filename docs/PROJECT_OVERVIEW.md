@@ -1,8 +1,9 @@
-# resume-lens — Project Overview
+# Project Overview: resume-lens
 
+**Version:** v1.0  
 **Type:** Portfolio project — AI integration demonstration  
-**Status:** In build phase  
-**Last updated:** April 2026
+**Status:** v1 build complete  
+**Last updated:** May 2026
 
 ---
 
@@ -35,12 +36,12 @@ The core feature: upload a PDF résumé, receive a structured, typed JSON extrac
 ```
 resume-lens/
 ├── packages/
-│ ├── shared/              # TypeScript types, error codes — no runtime deps
-│ ├── api/                 # TypeScript Lambda functions
-│ └── web/                 # React + Vite SPA
-├── infra/                 # AWS CDK stack
-├── package.json           # npm workspaces root
-├── tsconfig.base.json     # Shared TS compiler config
+│ ├── shared/                # TypeScript types, error codes — no runtime deps
+│ ├── api/                   # TypeScript Lambda functions
+│ └── web/                   # React + Vite SPA
+├── infra/                   # AWS CDK stack
+├── package.json             # npm workspaces root
+├── tsconfig.base.json       # Shared TS compiler config
 └── README.md
 ```
 
@@ -50,8 +51,8 @@ Single responsibility: the shared contract between frontend and backend. No runt
 
 ```
 shared/src/
-├── types/resume.ts        # ResumeExtraction interface (canonical output type)
-└── errors/error-codes.ts  # Typed error code enum
+├── types/resume.ts          # ResumeExtraction interface (canonical output type)
+└── errors/error-codes.ts    # Typed error code enum
 ```
 
 ### `packages/api`
@@ -60,12 +61,9 @@ Plain TypeScript Lambda function. Three services encapsulate specific functional
 
 ```
 api/src/
-├── handlers/
-│ ├── extract-handler.ts           # Extraction Lambda handler entry point
-└── services/
-      ├── intake-service.ts        # File type + size validation
-      ├── parser-service.ts        # Parse PDF → raw text string
-      └── extraction-service.ts    # Prompt construction + Bedrock invocation
+├── handlers/                # Lambda function handlers
+├── services/                # Business services
+└── utils/                   # Utilities
 ```
 
 ### `packages/web`
@@ -76,12 +74,9 @@ Minimal React SPA.
 web/src/
 ├── main.tsx
 ├── App.tsx
-├── components/
-│ ├── UploadForm.tsx        # Drag-drop + file picker, PDF only, 5MB cap
-│ ├── LoadingState.tsx      # Skeleton / spinner during extraction
-│ └── ResultCard.tsx        # Renders ResumeExtraction JSON visually
-└── api/
-    └── api-client.ts       # Single fetch call, typed against @resume-lens/shared
+├── components/             # React components
+├── api/                    # API clients
+└── utils/                  # Utilities
 ```
 
 ### `infra/`
@@ -90,8 +85,8 @@ AWS CDK provisions all resources. For simplicity in this project, use a single s
 
 ```
 infra/
-├──app.ts                                # CDK app entry point
-└── stacks/resume-lens-stack.ts          # Lambda + API Gateway + S3 + CloudFront + IAM
+├──app.ts                   # CDK app entry point
+└── stacks/                 # CDK stacks
 ```
 
 ---
