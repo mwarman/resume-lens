@@ -1,4 +1,4 @@
-# resume-lens — Architecture Decisions
+# Architectural Decisions: resume-lens
 
 This document is the authoritative log of all architectural and design decisions made for the `resume-lens` project. Each entry records the decision, the alternatives considered, the rationale, and any constraints that drove the choice.
 
