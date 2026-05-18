@@ -162,3 +162,19 @@ New decisions should be appended in the same format as sessions progress.
 **Decision:** Claude 4 Haiku via Bedrock for all extraction calls.
 
 **Rationale:** Haiku is the lowest-cost Claude model available on Bedrock. For structured JSON extraction from clean text (résumé content extracted by `unpdf`), Haiku's capability is sufficient — this is not a reasoning-heavy task. Sonnet or Opus would add cost without adding meaningful extraction quality for well-formatted résumés. `modelId` is captured in `extractionMeta` on every response, making a future model upgrade traceable in output history.
+
+---
+
+## **AD-013 — Frontend styling: Tailwind CSS + shadcn/ui**
+
+**Decision:** Use Tailwind CSS for utility-first styling and shadcn/ui component library for consistent, accessible UI components. Remove CSS modules in favor of inline Tailwind classes.
+
+**Alternatives considered:**
+
+- CSS modules with custom CSS
+- CSS-in-JS (styled-components, emotion)
+- CSS framework (Bootstrap, Material-UI)
+
+**Rationale:** Tailwind CSS is the modern standard for utility-first styling and provides excellent dark mode support via `dark:` variants. shadcn/ui offers composable, unstyled components built on Radix UI primitives, ensuring accessibility standards are met without heavyweight framework dependencies. Both integrate seamlessly with Vite's build pipeline and produce minimal runtime overhead. Removing CSS modules in favor of Tailwind classes centralizes styling logic alongside markup, improving maintainability and enabling JIT CSS generation.
+
+**Trade-off acknowledged:** Utility-first CSS is less familiar to developers trained on traditional CSS or CSS-in-JS. However, the approach is now industry-standard and provides superior DX and bundle efficiency for this scale of application.

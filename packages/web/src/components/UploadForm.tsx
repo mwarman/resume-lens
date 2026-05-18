@@ -1,7 +1,10 @@
 import { useRef, useState } from 'react';
 import { ResumeLensErrorCode } from '@resume-lens/shared';
+import { Upload } from 'lucide-react';
+import clsx from 'clsx';
+import { Button } from './shadcn/button';
+import { Alert, AlertDescription, AlertTitle } from './shadcn/alert';
 import { getErrorMessage } from '../utils/error-messages';
-import styles from './UploadForm.module.css';
 
 interface UploadFormProps {
   onUpload: (file: File) => Promise<void>;
@@ -13,6 +16,12 @@ const ACCEPTED_MIME_TYPE = 'application/pdf';
 const MAX_FILE_SIZE_MB = 5;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
+/**
+ * UploadForm component for submitting PDF résumés.
+ * Redesigned with Tailwind CSS and shadcn/ui components.
+ * Supports drag-and-drop, file validation (PDF, 5MB max), and client-side error handling.
+ * Renders correctly in both light and dark modes via Tailwind dark: variants.
+ */
 const UploadForm = ({ onUpload, onStartSubmit, error: parentError }: UploadFormProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -87,7 +96,7 @@ const UploadForm = ({ onUpload, onStartSubmit, error: parentError }: UploadFormP
     fileInputRef.current?.click();
   };
 
-  const handleSubmit = async (e: React.SubmitEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedFile) return;
 
@@ -106,30 +115,50 @@ const UploadForm = ({ onUpload, onStartSubmit, error: parentError }: UploadFormP
   const isButtonDisabled = !selectedFile || isSubmitting;
 
   return (
-    <div className={styles.container}>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleInputChange} className={styles.fileInput} />
+    <div className="mx-auto max-w-2xl px-6 py-8 md:px-4">
+      <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+        <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleInputChange} className="hidden" />
 
+        {/* Drag-and-drop zone */}
         <div
-          className={`${styles.dropZone} ${isDragActive ? styles.active : ''}`}
+          className={clsx(
+            'flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed',
+            'bg-muted p-12 text-center transition-all duration-200 cursor-pointer',
+            isDragActive
+              ? ['border-primary bg-primary/5 shadow-md', 'dark:border-primary dark:bg-primary/10']
+              : [
+                  'border-muted-foreground/25 bg-muted hover:border-primary/50 hover:bg-muted/80',
+                  'dark:border-muted-foreground/25 dark:bg-muted/50 dark:hover:border-primary/40 dark:hover:bg-muted/70',
+                ],
+          )}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={handleClickBrowse}
         >
-          <p className={styles.dropZoneText}>Drag and drop your PDF résumé here, or click to browse</p>
+          <Upload className="size-10 text-muted-foreground" />
+          <p className="text-sm font-medium text-foreground md:text-base">
+            Drag and drop your PDF resume here, or click to browse
+          </p>
           {selectedFile && !localError && (
-            <p className={styles.selectedFile}>
-              Selected: <span className={styles.selectedFileName}>{selectedFile.name}</span>
+            <p className="text-xs text-muted-foreground">
+              Selected: <span className="font-semibold text-foreground">{selectedFile.name}</span>
             </p>
           )}
         </div>
 
-        {displayError && <div className={styles.errorMessage}>{displayError}</div>}
+        {/* Error alert */}
+        {displayError && (
+          <Alert variant="destructive">
+            <AlertTitle>Validation Error</AlertTitle>
+            <AlertDescription>{displayError}</AlertDescription>
+          </Alert>
+        )}
 
-        <button type="submit" disabled={isButtonDisabled} className={styles.submitButton}>
+        {/* Submit button */}
+        <Button type="submit" disabled={isButtonDisabled} className="w-full">
           {isSubmitting ? 'Extracting...' : 'Extract Resume'}
-        </button>
+        </Button>
       </form>
     </div>
   );
