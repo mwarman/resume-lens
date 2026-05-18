@@ -1,15 +1,18 @@
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
-import styles from './Header.module.css';
 
 /**
  * Header component displays the application title and theme toggle.
- * Appears at the top of the page across all application states.
+ * Rendered with Tailwind utility classes for consistent light/dark mode support.
+ * ThemeToggle is placed top-right as the conventional location for theme controls.
  */
 const Header = () => {
   return (
-    <header className={styles.header}>
-      <div className={styles.headerContent}>
-        <h1 className={styles.title}>Resume Lens</h1>
+    <header className="px-6 py-3 border-b border-border">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Resume Lens</h1>
+          <p className="text-sm text-muted-foreground">AI-powered resume data extraction</p>
+        </div>
         <ThemeToggle />
       </div>
     </header>
