@@ -177,12 +177,4 @@ New decisions should be appended in the same format as sessions progress.
 
 **Rationale:** Tailwind CSS is the modern standard for utility-first styling and provides excellent dark mode support via `dark:` variants. shadcn/ui offers composable, unstyled components built on Radix UI primitives, ensuring accessibility standards are met without heavyweight framework dependencies. Both integrate seamlessly with Vite's build pipeline and produce minimal runtime overhead. Removing CSS modules in favor of Tailwind classes centralizes styling logic alongside markup, improving maintainability and enabling JIT CSS generation.
 
-**Design specifics:**
-
-- `UploadForm` component redesigned with Tailwind utility classes and `dark:` variants for light/dark mode support
-- shadcn components used: `Button` (submit action), `Alert` (error display)
-- Drag-and-drop zone uses dashed border with primary color on active state; subtle background transitions via `transition-all` utility
-- Lucide-react icons (Upload) reinforce interaction affordances
-- Form validation errors rendered via shadcn `Alert` component with destructive variant
-
 **Trade-off acknowledged:** Utility-first CSS is less familiar to developers trained on traditional CSS or CSS-in-JS. However, the approach is now industry-standard and provides superior DX and bundle efficiency for this scale of application.
