@@ -2,12 +2,14 @@ import { useState } from 'react';
 import type { ResumeExtraction } from '@resume-lens/shared';
 import { ResumeLensError } from '@resume-lens/shared';
 
-import { extractResume, NetworkError } from './api/client';
-import { getErrorMessage, NETWORK_ERROR_MESSAGE } from './utils/error-messages';
-import Header from './components/Header';
-import UploadForm from './components/UploadForm';
-import LoadingState from './components/LoadingState';
-import ResultCard from './components/ResultCard';
+import { extractResume, NetworkError } from '@/api/client';
+import { getErrorMessage, NETWORK_ERROR_MESSAGE } from '@/utils/error-messages';
+import Header from '@/components/Header';
+import UploadForm from '@/components/UploadForm';
+import LoadingState from '@/components/LoadingState';
+import ResultCard from '@/components/ResultCard';
+
+import '@/index.css';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
