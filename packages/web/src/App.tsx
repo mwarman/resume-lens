@@ -4,6 +4,7 @@ import { ResumeLensError } from '@resume-lens/shared';
 
 import { extractResume, NetworkError } from '@/api/client';
 import { getErrorMessage, NETWORK_ERROR_MESSAGE } from '@/utils/error-messages';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import Header from '@/components/Header';
 import UploadForm from '@/components/UploadForm';
 import LoadingState from '@/components/LoadingState';
@@ -55,14 +56,16 @@ const App = () => {
   };
 
   return (
-    <div>
-      <Header />
-      {isLoading && <LoadingState />}
-      {!isLoading && !extractionResult && (
-        <UploadForm onUpload={handleUpload} onStartSubmit={handleStartSubmit} error={error} />
-      )}
-      {extractionResult && <ResultCard extraction={extractionResult} onReset={handleReset} />}
-    </div>
+    <ThemeProvider defaultTheme="dark" storageKey="resume-lens-ui-theme">
+      <div>
+        <Header />
+        {isLoading && <LoadingState />}
+        {!isLoading && !extractionResult && (
+          <UploadForm onUpload={handleUpload} onStartSubmit={handleStartSubmit} error={error} />
+        )}
+        {extractionResult && <ResultCard extraction={extractionResult} onReset={handleReset} />}
+      </div>
+    </ThemeProvider>
   );
 };
 
