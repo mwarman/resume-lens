@@ -5,9 +5,23 @@
   border-bottom: 2px solid #e5e7eb;
 }
 
+:global(.dark) .header {
+  border-bottom-color: #374151;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .title {
   margin: 0;
   font-size: 2rem;
   font-weight: 700;
   color: #1f2937;
+}
+
+:global(.dark) .title {
+  color: #f3f4f6;
 }
