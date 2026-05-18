@@ -9,6 +9,8 @@ import UploadForm from './components/UploadForm';
 import LoadingState from './components/LoadingState';
 import ResultCard from './components/ResultCard';
 
+import './global.css';
+
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [extractionResult, setExtractionResult] = useState<ResumeExtraction | null>(null);
