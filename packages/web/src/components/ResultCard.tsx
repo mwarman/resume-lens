@@ -1,5 +1,6 @@
 import { JSX, useState } from 'react';
-import { ChevronDown, ChevronRight, Info } from 'lucide-react';
+import { ChevronDown, ChevronRight, ClipboardCopy, Info } from 'lucide-react';
+import { toast } from 'sonner';
 
 import type { ResumeExtraction } from '@resume-lens/shared';
 import { Badge } from '@/components/shadcn/badge';
@@ -45,6 +46,12 @@ const getSeniorityBadgeVariant = (level: string): 'default' | 'secondary' | 'des
     default:
       return 'outline'; // gray
   }
+};
+
+const copyExtractionToClipboard = (extraction: ResumeExtraction) => {
+  const jsonStr = JSON.stringify(extraction, null, 2);
+  navigator.clipboard.writeText(jsonStr);
+  toast.success('Resume JSON copied to clipboard');
 };
 
 /**
@@ -290,8 +297,17 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps): JSX.Element => {
         <ResizablePanel defaultSize="50%" className="px-0.5">
           <Card className="bg-gray-200 dark:bg-gray-700 pb-0">
             <CardHeader>
-              <CardTitle>
+              <CardTitle className="flex items-center justify-between">
                 <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Raw API Response</h4>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  title="Copy JSON to clipboard"
+                  onClick={() => copyExtractionToClipboard(extraction)}
+                >
+                  <ClipboardCopy className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                  <span className="sr-only">Copy JSON to clipboard</span>
+                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
