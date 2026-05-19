@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import type { ResumeExtraction } from '@resume-lens/shared';
 import { Badge } from './shadcn/badge';
 import { Button } from './shadcn/button';
@@ -6,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './sha
 import { Tooltip, TooltipTrigger, TooltipContent } from './shadcn/tooltip';
 import { ScrollArea } from './shadcn/scroll-area';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './shadcn/resizable';
+import SyntaxHighlighter from '@/components/syntax/SyntaxHighlighter';
 
 interface ResultCardProps {
   extraction: ResumeExtraction;
@@ -290,9 +292,7 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
               <h3 className="text-sm font-semibold text-slate-100">Raw API Response</h3>
             </div>
             <ScrollArea className="flex-1">
-              <pre className="p-4 text-xs text-slate-100 font-mono leading-relaxed whitespace-pre-wrap wrap-break-word">
-                {JSON.stringify(extraction, null, 2)}
-              </pre>
+              <SyntaxHighlighter language="json">{JSON.stringify(extraction, null, 2)}</SyntaxHighlighter>
             </ScrollArea>
           </Card>
         </ResizablePanel>
