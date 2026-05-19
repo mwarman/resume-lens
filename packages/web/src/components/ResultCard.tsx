@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { ResumeExtraction } from '@resume-lens/shared';
 import { Badge } from './shadcn/badge';
 import { Button } from './shadcn/button';
-import { Card } from './shadcn/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './shadcn/card';
 import { Tooltip, TooltipTrigger, TooltipContent } from './shadcn/tooltip';
 import { ScrollArea } from './shadcn/scroll-area';
 
@@ -190,31 +190,35 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
               </div>
               <div className="space-y-3">
                 {extraction.experience.map((exp, idx) => (
-                  <Card key={idx} className="border-l-4 border-l-blue-500 dark:border-l-blue-600 p-4">
-                    <div className="flex justify-between items-start gap-4 mb-2">
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white">{exp.title}</h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{exp.company}</p>
-                      </div>
-                      {exp.current && (
-                        <Badge variant="default" className="whitespace-nowrap">
-                          Current
-                        </Badge>
+                  <Card key={idx} className="border-l-4 border-l-blue-500 dark:border-l-blue-600 gap-2">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <h4>{exp.title}</h4>
+                        {exp.current && (
+                          <Badge variant="default" className="whitespace-nowrap">
+                            Current
+                          </Badge>
+                        )}
+                      </CardTitle>
+                      <CardDescription className="text-gray-700 dark:text-gray-300">
+                        {exp.company}
+                        {/* <p className="text-sm text-gray-600 dark:text-gray-400">{exp.company}</p> */}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-xs text-gray-500 dark:text-gray-500 mb-3">
+                        {dateRange(exp.startDate, exp.endDate, exp.current)}
+                      </p>
+                      {exp.highlights.length > 0 && (
+                        <ul className="space-y-1 ml-4 list-disc text-sm text-gray-700 dark:text-gray-300">
+                          {exp.highlights.map((highlight, hIdx) => (
+                            <li key={hIdx}>
+                              <span>{highlight}</span>
+                            </li>
+                          ))}
+                        </ul>
                       )}
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mb-3">
-                      {dateRange(exp.startDate, exp.endDate, exp.current)}
-                    </p>
-                    {exp.highlights.length > 0 && (
-                      <ul className="space-y-1">
-                        {exp.highlights.map((highlight, hIdx) => (
-                          <li key={hIdx} className="text-sm text-gray-700 dark:text-gray-300 flex gap-2">
-                            <span className="text-gray-400 dark:text-gray-600 flex-shrink-0">•</span>
-                            <span>{highlight}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    </CardContent>
                   </Card>
                 ))}
               </div>
@@ -230,15 +234,21 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
               </div>
               <div className="space-y-3">
                 {extraction.education.map((edu, idx) => (
-                  <Card key={idx} className="border-l-4 border-l-green-500 dark:border-l-green-600 p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-white">{edu.institution}</h4>
-                    <div className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                      {edu.degree && <p>{edu.degree}</p>}
-                      {edu.field && <p>{edu.field}</p>}
-                      {edu.graduationYear && (
-                        <p className="text-xs text-gray-500 dark:text-gray-500">{edu.graduationYear}</p>
-                      )}
-                    </div>
+                  <Card key={idx} className="border-l-4 border-l-green-500 dark:border-l-green-600 gap-2">
+                    <CardHeader>
+                      <CardTitle>
+                        <h4 className="font-semibold text-gray-900 dark:text-white">{edu.institution}</h4>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        {edu.degree && <p>{edu.degree}</p>}
+                        {edu.field && <p>{edu.field}</p>}
+                        {edu.graduationYear && (
+                          <p className="text-xs text-gray-500 dark:text-gray-500">{edu.graduationYear}</p>
+                        )}
+                      </div>
+                    </CardContent>
                   </Card>
                 ))}
               </div>
@@ -251,12 +261,18 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Certifications</h3>
               <div className="space-y-3">
                 {extraction.certifications.map((cert, idx) => (
-                  <Card key={idx} className="border-l-4 border-l-amber-500 dark:border-l-amber-600 p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-white">{cert.name}</h4>
-                    <div className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                      {cert.issuer && <p>{cert.issuer}</p>}
-                      {cert.year && <p className="text-xs text-gray-500 dark:text-gray-500">{cert.year}</p>}
-                    </div>
+                  <Card key={idx} className="border-l-4 border-l-amber-500 dark:border-l-amber-600 gap-2">
+                    <CardHeader>
+                      <CardTitle>
+                        <h4 className="font-semibold text-gray-900 dark:text-white">{cert.name}</h4>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        {cert.issuer && <p>{cert.issuer}</p>}
+                        {cert.year && <p className="text-xs text-gray-500 dark:text-gray-500">{cert.year}</p>}
+                      </div>
+                    </CardContent>
                   </Card>
                 ))}
               </div>
@@ -271,7 +287,7 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
               <h3 className="text-sm font-semibold text-slate-100">Raw API Response</h3>
             </div>
             <ScrollArea className="flex-1">
-              <pre className="p-4 text-xs text-slate-100 font-mono leading-relaxed whitespace-pre-wrap break-words">
+              <pre className="p-4 text-xs text-slate-100 font-mono leading-relaxed whitespace-pre-wrap wrap-break-word">
                 {JSON.stringify(extraction, null, 2)}
               </pre>
             </ScrollArea>
