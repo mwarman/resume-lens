@@ -6,6 +6,11 @@ import { TooltipProvider } from '@/components/shadcn/tooltip';
 
 import '@/index.css';
 
+/**
+ * App is the root component of the application.
+ * It wraps the application with necessary context providers.
+ * @returns JSX.Element
+ */
 const App = (): JSX.Element => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="resume-lens-ui-theme">
