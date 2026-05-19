@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { JSX, useState } from 'react';
+import { ChevronDown, ChevronRight, Info } from 'lucide-react';
 
 import type { ResumeExtraction } from '@resume-lens/shared';
-import { Badge } from './shadcn/badge';
-import { Button } from './shadcn/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './shadcn/card';
-import { Tooltip, TooltipTrigger, TooltipContent } from './shadcn/tooltip';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './shadcn/resizable';
+import { Badge } from '@/components/shadcn/badge';
+import { Button } from '@/components/shadcn/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/shadcn/card';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/shadcn/tooltip';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/shadcn/resizable';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/shadcn/collapsible';
 import SyntaxHighlighter from '@/components/syntax/SyntaxHighlighter';
 
 interface ResultCardProps {
@@ -59,7 +61,7 @@ const getSeniorityBadgeVariant = (level: string): 'default' | 'secondary' | 'des
  * - Collapsible metadata section
  * - "Analyze another résumé" button at bottom
  */
-const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
+const ResultCard = ({ extraction, onReset }: ResultCardProps): JSX.Element => {
   const [isMetadataOpen, setIsMetadataOpen] = useState(true);
 
   const formatDate = (dateStr: string | null) => {
@@ -137,10 +139,10 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Seniority (AI-Inferred)</h3>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help">ⓘ</span>
+                  <Info className="h-4 w-4 text-gray-500 dark:text-gray-400 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p>This level is computed by the AI model based on résumé content, not extracted directly.</p>
+                  <p>This level is computed by the AI model based on resume content, not extracted directly.</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -289,7 +291,7 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
           <Card className="bg-gray-200 dark:bg-gray-700 pb-0">
             <CardHeader>
               <CardTitle>
-                <h4 className="font-semibold text-gray-900 dark:text-white">Raw API Response</h4>
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Raw API Response</h4>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -302,35 +304,45 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
       </ResizablePanelGroup>
 
       {/* Metadata Section - Collapsible */}
-      <section className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg mb-6 overflow-hidden">
-        <button
-          className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800 cursor-pointer flex items-center gap-2 transition-colors border-b border-gray-200 dark:border-slate-800"
-          onClick={() => setIsMetadataOpen(!isMetadataOpen)}
-          aria-expanded={isMetadataOpen}
-        >
-          <span className={`transform transition-transform ${isMetadataOpen ? 'rotate-0' : '-rotate-90'}`}>▼</span>
-          <span className="font-medium text-gray-900 dark:text-white">Extraction Metadata</span>
-        </button>
-        {isMetadataOpen && (
-          <div className="px-4 py-3 bg-white dark:bg-slate-950 space-y-3">
-            <div className="flex justify-between items-center text-sm">
-              <span className="font-medium text-gray-700 dark:text-gray-300">Model:</span>
-              <code className="text-gray-600 dark:text-gray-400 font-mono">{extraction.extractionMeta.modelId}</code>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="font-medium text-gray-700 dark:text-gray-300">Processed:</span>
-              <time className="text-gray-600 dark:text-gray-400">
-                {new Date(extraction.extractionMeta.processedAt).toLocaleString()}
-              </time>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="font-medium text-gray-700 dark:text-gray-300">Source:</span>
-              <span className="text-gray-600 dark:text-gray-400">
-                {extraction.extractionMeta.sourceFormat.toUpperCase()}
-              </span>
-            </div>
-          </div>
-        )}
+      <section className="mb-8">
+        <Collapsible open={isMetadataOpen} onOpenChange={setIsMetadataOpen}>
+          <Card className="py-0">
+            <CardHeader className="bg-gray-200 dark:bg-gray-700 py-3 px-0">
+              <CardTitle>
+                <CollapsibleTrigger asChild>
+                  <Button variant="link" className="w-full justify-start">
+                    {isMetadataOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Extraction Metadata</h4>
+                  </Button>
+                </CollapsibleTrigger>
+              </CardTitle>
+            </CardHeader>
+            <CollapsibleContent>
+              <CardContent>
+                <div className="space-y-2 pb-4">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Model:</span>
+                    <code className="text-gray-600 dark:text-gray-400 font-mono">
+                      {extraction.extractionMeta.modelId}
+                    </code>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Processed:</span>
+                    <time className="text-gray-600 dark:text-gray-400">
+                      {new Date(extraction.extractionMeta.processedAt).toLocaleString()}
+                    </time>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Source:</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      {extraction.extractionMeta.sourceFormat.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       </section>
 
       {/* Action Button */}
