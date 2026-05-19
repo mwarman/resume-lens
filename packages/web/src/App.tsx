@@ -13,7 +13,7 @@ import '@/index.css';
  */
 const App = (): JSX.Element => {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="resume-lens-ui-theme">
+    <ThemeProvider storageKey="resume-lens-ui-theme">
       <TooltipProvider>
         <ResumePage />
       </TooltipProvider>
