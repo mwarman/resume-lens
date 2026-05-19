@@ -5,7 +5,6 @@ import { Badge } from './shadcn/badge';
 import { Button } from './shadcn/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './shadcn/card';
 import { Tooltip, TooltipTrigger, TooltipContent } from './shadcn/tooltip';
-import { ScrollArea } from './shadcn/scroll-area';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './shadcn/resizable';
 import SyntaxHighlighter from '@/components/syntax/SyntaxHighlighter';
 
@@ -287,13 +286,17 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
 
         {/* Right column: Raw JSON */}
         <ResizablePanel defaultSize="50%" className="px-0.5">
-          <Card className="h-full flex flex-col bg-slate-900 dark:bg-slate-800 border-gray-700 dark:border-slate-700">
-            <div className="px-4 py-3 border-b border-slate-700 dark:border-slate-600">
-              <h3 className="text-sm font-semibold text-slate-100">Raw API Response</h3>
-            </div>
-            <ScrollArea className="flex-1">
-              <SyntaxHighlighter language="json">{JSON.stringify(extraction, null, 2)}</SyntaxHighlighter>
-            </ScrollArea>
+          <Card className="bg-gray-200 dark:bg-gray-700 pb-0">
+            <CardHeader>
+              <CardTitle>
+                <h4 className="font-semibold text-gray-900 dark:text-white">Raw API Response</h4>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <SyntaxHighlighter language="json" wrapLongLines>
+                {JSON.stringify(extraction, null, 2)}
+              </SyntaxHighlighter>
+            </CardContent>
           </Card>
         </ResizablePanel>
       </ResizablePanelGroup>
