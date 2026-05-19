@@ -60,11 +60,13 @@ const ResumePage = (): JSX.Element => {
   return (
     <div>
       <Header />
-      {isLoading && <LoadingState />}
-      {!isLoading && !extractionResult && (
-        <UploadForm onUpload={handleUpload} onStartSubmit={handleStartSubmit} error={error} />
-      )}
-      {extractionResult && <ResultCard extraction={extractionResult} onReset={handleReset} />}
+      <div className="pt-20">
+        {isLoading && <LoadingState />}
+        {!isLoading && !extractionResult && (
+          <UploadForm onUpload={handleUpload} onStartSubmit={handleStartSubmit} error={error} />
+        )}
+        {extractionResult && <ResultCard extraction={extractionResult} onReset={handleReset} />}
+      </div>
     </div>
   );
 };
