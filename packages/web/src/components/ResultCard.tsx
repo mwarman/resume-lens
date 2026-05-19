@@ -5,6 +5,7 @@ import { Button } from './shadcn/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './shadcn/card';
 import { Tooltip, TooltipTrigger, TooltipContent } from './shadcn/tooltip';
 import { ScrollArea } from './shadcn/scroll-area';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './shadcn/resizable';
 
 interface ResultCardProps {
   extraction: ResumeExtraction;
@@ -71,17 +72,17 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 md:px-6 md:py-12 bg-white dark:bg-slate-950 transition-colors">
+    <div className="max-w-7xl mx-auto px-4 py-8 md:px-6 md:py-12">
       {/* Two-column layout: structured data (left) and raw JSON (right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      <ResizablePanelGroup orientation="horizontal" className="gap-8 mb-8">
         {/* Left column: Structured content (2 cols on large screens) */}
-        <div className="lg:col-span-2 space-y-6">
+        <ResizablePanel defaultSize="50%" className="space-y-6 px-0.5">
           {/* Candidate Header Block */}
           <div className="border-b border-gray-200 dark:border-slate-700 pb-6">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               {extraction.candidate.fullName}
             </h2>
-            <div className="flex flex-wrap gap-4 text-sm">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
               {extraction.candidate.email && (
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-gray-700 dark:text-gray-300">Email:</span>
@@ -278,10 +279,12 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
               </div>
             </section>
           )}
-        </div>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
 
         {/* Right column: Raw JSON */}
-        <div className="lg:col-span-1">
+        <ResizablePanel defaultSize="50%" className="px-0.5">
           <Card className="h-full flex flex-col bg-slate-900 dark:bg-slate-800 border-gray-700 dark:border-slate-700">
             <div className="px-4 py-3 border-b border-slate-700 dark:border-slate-600">
               <h3 className="text-sm font-semibold text-slate-100">Raw API Response</h3>
@@ -292,8 +295,8 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
               </pre>
             </ScrollArea>
           </Card>
-        </div>
-      </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
 
       {/* Metadata Section - Collapsible */}
       <section className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg mb-6 overflow-hidden">
@@ -330,7 +333,7 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
       {/* Action Button */}
       <div className="flex justify-center">
         <Button onClick={onReset} size="lg" className="px-8">
-          Analyze Another Résumé
+          Analyze Another Resume
         </Button>
       </div>
     </div>
