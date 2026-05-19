@@ -6,7 +6,7 @@ import { ResumeLensError } from '@resume-lens/shared';
 import { extractResume, NetworkError } from '@/api/client';
 import { getErrorMessage, NETWORK_ERROR_MESSAGE } from '@/utils/error-messages';
 import { useTheme } from '@/contexts/ThemeContext';
-import Header from '@/components/Header';
+import Header from '@/components/header/Header';
 import UploadForm from '@/components/UploadForm';
 import LoadingState from '@/components/LoadingState';
 import ResultCard from '@/components/ResultCard';
