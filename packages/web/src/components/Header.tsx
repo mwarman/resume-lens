@@ -7,7 +7,7 @@ import { ThemeToggle } from '@/components/theme/ThemeToggle';
  */
 const Header = () => {
   return (
-    <header className="px-6 py-3 h-20 w-full border-b border-border fixed bg-background z-50">
+    <header className="px-6 py-3 h-20 w-full border-b border-border sticky top-0 bg-background z-50">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Resume Lens</h1>

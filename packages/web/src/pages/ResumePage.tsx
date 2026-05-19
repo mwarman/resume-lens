@@ -63,7 +63,7 @@ const ResumePage = (): JSX.Element => {
   return (
     <div>
       <Header />
-      <div className="pt-20">
+      <div>
         {isLoading && <LoadingState />}
         {!isLoading && !extractionResult && (
           <UploadForm onUpload={handleUpload} onStartSubmit={handleStartSubmit} error={error} />
