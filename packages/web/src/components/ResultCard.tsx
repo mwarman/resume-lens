@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import type { ResumeExtraction } from '@resume-lens/shared';
-import styles from './ResultCard.module.css';
+import { Badge } from './shadcn/badge';
+import { Button } from './shadcn/button';
+import { Card } from './shadcn/card';
+import { Tooltip, TooltipTrigger, TooltipContent } from './shadcn/tooltip';
+import { ScrollArea } from './shadcn/scroll-area';
 
 interface ResultCardProps {
   extraction: ResumeExtraction;
@@ -13,17 +17,45 @@ interface ResultCardProps {
  */
 const ConfidenceBadge = ({ level }: { level: 'high' | 'medium' | 'low' }) => {
   if (level === 'high') return null;
-  return <span className={`${styles.badge} ${styles[`badge-${level}`]}`}>{level}</span>;
+
+  const variant = level === 'low' ? 'destructive' : 'secondary';
+  const label = level.charAt(0).toUpperCase() + level.slice(1);
+
+  return <Badge variant={variant}>{label}</Badge>;
+};
+
+/**
+ * Maps seniority levels to color variants for the Badge component.
+ * junior: blue, mid: teal, senior: purple, principal: orange, unknown: gray
+ */
+const getSeniorityBadgeVariant = (level: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
+  switch (level) {
+    case 'junior':
+      return 'secondary'; // blue
+    case 'mid':
+      return 'outline'; // teal
+    case 'senior':
+      return 'default'; // purple
+    case 'principal':
+      return 'destructive'; // orange
+    default:
+      return 'outline'; // gray
+  }
 };
 
 /**
  * ResultCard renders the full ResumeExtraction result in a structured, scannable layout.
  * Features:
- * - All sections displayed in a responsive grid (2-col on large screens, 1-col on small)
- * - Inferred seniority level prominently displayed
- * - Confidence indicators for medium/low confidence sections
- * - Collapsible metadata section (default open)
- * - Action to reset and analyze another résumé
+ * - Tailwind CSS with dark mode support (dark: variants)
+ * - shadcn components throughout (Badge, Card, Button, Tooltip)
+ * - Candidate block with labeled contact info
+ * - AI-inferred seniority level with tooltip explaining it is model-computed
+ * - Confidence indicators per section (low/medium visible, high omitted)
+ * - Skills as badges (technical and soft grouped with separators)
+ * - Experience and education in cards
+ * - Certifications section
+ * - Collapsible metadata section
+ * - "Analyze another résumé" button at bottom
  */
 const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
   const [isMetadataOpen, setIsMetadataOpen] = useState(true);
@@ -39,209 +71,252 @@ const ResultCard = ({ extraction, onReset }: ResultCardProps) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="max-w-7xl mx-auto px-4 py-8 md:px-6 md:py-12 bg-white dark:bg-slate-950 transition-colors">
       {/* Two-column layout: structured data (left) and raw JSON (right) */}
-      <div className={styles.mainLayout}>
-        {/* Left column: Structured content */}
-        <div className={styles.leftColumn}>
-          {/* Main grid content */}
-          <div className={styles.grid}>
-            {/* Candidate Header - at top of left column */}
-            <header className={styles.header}>
-              <div>
-                <h2 className={styles.candidateName}>{extraction.candidate.fullName}</h2>
-                <div className={styles.contactInfo}>
-                  {extraction.candidate.email && <span>{extraction.candidate.email}</span>}
-                  {extraction.candidate.phone && <span>{extraction.candidate.phone}</span>}
-                  {extraction.candidate.location && <span>{extraction.candidate.location}</span>}
-                  {extraction.candidate.linkedIn && (
-                    <a href={extraction.candidate.linkedIn} target="_blank" rel="noopener noreferrer">
-                      LinkedIn
-                    </a>
-                  )}
-                </div>
-              </div>
-            </header>
-
-            {/* Summary */}
-            {extraction.summary && (
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Summary</h3>
-                <p className={styles.summaryText}>{extraction.summary}</p>
-              </section>
-            )}
-
-            {/* AI Inferences */}
-            <section className={styles.section} style={{ borderLeft: '3px solid #a78bfa' }}>
-              <h3 className={styles.sectionTitle}>AI Inferences</h3>
-              <div className={styles.inferencesGrid}>
-                <div className={styles.inferenceItem}>
-                  <div className={styles.inferenceLabel}>Seniority Level</div>
-                  <div
-                    className={`${styles.seniorityBadge} ${styles[`seniority-${extraction.inferredSeniorityLevel}`]}`}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        {/* Left column: Structured content (2 cols on large screens) */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Candidate Header Block */}
+          <div className="border-b border-gray-200 dark:border-slate-700 pb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              {extraction.candidate.fullName}
+            </h2>
+            <div className="flex flex-wrap gap-4 text-sm">
+              {extraction.candidate.email && (
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">Email:</span>
+                  <a
+                    href={`mailto:${extraction.candidate.email}`}
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
                   >
-                    {extraction.inferredSeniorityLevel.charAt(0).toUpperCase() +
-                      extraction.inferredSeniorityLevel.slice(1)}
-                  </div>
+                    {extraction.candidate.email}
+                  </a>
                 </div>
-              </div>
-            </section>
+              )}
+              {extraction.candidate.phone && (
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">Phone:</span>
+                  <span className="text-gray-600 dark:text-gray-400">{extraction.candidate.phone}</span>
+                </div>
+              )}
+              {extraction.candidate.location && (
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">Location:</span>
+                  <span className="text-gray-600 dark:text-gray-400">{extraction.candidate.location}</span>
+                </div>
+              )}
+              {extraction.candidate.linkedIn && (
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">LinkedIn:</span>
+                  <a
+                    href={extraction.candidate.linkedIn}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Profile
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
 
-            {/* Technical Skills */}
-            <section className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Technical Skills</h3>
+          {/* Summary */}
+          {extraction.summary && (
+            <section className="space-y-3">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Summary</h3>
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{extraction.summary}</p>
+            </section>
+          )}
+
+          {/* AI-Inferred Seniority Level */}
+          <section className="space-y-3">
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Seniority (AI-Inferred)</h3>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help">ⓘ</span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>This level is computed by the AI model based on résumé content, not extracted directly.</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <Badge variant={getSeniorityBadgeVariant(extraction.inferredSeniorityLevel)} className="capitalize">
+              {extraction.inferredSeniorityLevel}
+            </Badge>
+          </section>
+
+          {/* Technical Skills */}
+          {extraction.skills.technical.length > 0 && (
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Technical Skills</h3>
                 <ConfidenceBadge level={extraction.extractionMeta.confidence.skills} />
               </div>
-              {extraction.skills.technical.length > 0 ? (
-                <div className={styles.skillsList}>
-                  {extraction.skills.technical.map((skill) => (
-                    <span key={skill} className={styles.skillTag}>
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p className={styles.emptyState}>No technical skills listed</p>
-              )}
+              <div className="flex flex-wrap gap-2">
+                {extraction.skills.technical.map((skill) => (
+                  <Badge key={skill} variant="secondary">
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
             </section>
+          )}
 
-            {/* Soft Skills */}
-            <section className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Soft Skills</h3>
+          {/* Soft Skills */}
+          {extraction.skills.soft.length > 0 && (
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Soft Skills</h3>
                 <ConfidenceBadge level={extraction.extractionMeta.confidence.skills} />
               </div>
-              {extraction.skills.soft.length > 0 ? (
-                <div className={styles.skillsList}>
-                  {extraction.skills.soft.map((skill) => (
-                    <span key={skill} className={styles.skillTag}>
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p className={styles.emptyState}>No soft skills listed</p>
-              )}
+              <div className="flex flex-wrap gap-2">
+                {extraction.skills.soft.map((skill) => (
+                  <Badge key={skill} variant="outline">
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
             </section>
+          )}
 
-            {/* Experience - spans both columns */}
-            <section className={`${styles.section} ${styles.fullWidth}`}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Experience</h3>
+          {/* Experience */}
+          {extraction.experience.length > 0 && (
+            <section className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Experience</h3>
                 <ConfidenceBadge level={extraction.extractionMeta.confidence.experience} />
               </div>
-              {extraction.experience.length > 0 ? (
-                <div className={styles.experienceList}>
-                  {extraction.experience.map((exp, idx) => (
-                    <div key={idx} className={styles.experienceItem}>
-                      <div className={styles.experienceHeader}>
-                        <h4 className={styles.jobTitle}>{exp.title}</h4>
-                        <span className={styles.company}>{exp.company}</span>
+              <div className="space-y-3">
+                {extraction.experience.map((exp, idx) => (
+                  <Card key={idx} className="border-l-4 border-l-blue-500 dark:border-l-blue-600 p-4">
+                    <div className="flex justify-between items-start gap-4 mb-2">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-white">{exp.title}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{exp.company}</p>
                       </div>
-                      <div className={styles.dateRange}>{dateRange(exp.startDate, exp.endDate, exp.current)}</div>
-                      {exp.highlights.length > 0 && (
-                        <ul className={styles.highlights}>
-                          {exp.highlights.map((highlight, hIdx) => (
-                            <li key={hIdx}>{highlight}</li>
-                          ))}
-                        </ul>
+                      {exp.current && (
+                        <Badge variant="default" className="whitespace-nowrap">
+                          Current
+                        </Badge>
                       )}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className={styles.emptyState}>No experience listed</p>
-              )}
+                    <p className="text-xs text-gray-500 dark:text-gray-500 mb-3">
+                      {dateRange(exp.startDate, exp.endDate, exp.current)}
+                    </p>
+                    {exp.highlights.length > 0 && (
+                      <ul className="space-y-1">
+                        {exp.highlights.map((highlight, hIdx) => (
+                          <li key={hIdx} className="text-sm text-gray-700 dark:text-gray-300 flex gap-2">
+                            <span className="text-gray-400 dark:text-gray-600 flex-shrink-0">•</span>
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </Card>
+                ))}
+              </div>
             </section>
+          )}
 
-            {/* Education - spans both columns */}
-            <section className={`${styles.section} ${styles.fullWidth}`}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Education</h3>
+          {/* Education */}
+          {extraction.education.length > 0 && (
+            <section className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Education</h3>
                 <ConfidenceBadge level={extraction.extractionMeta.confidence.education} />
               </div>
-              {extraction.education.length > 0 ? (
-                <div className={styles.educationList}>
-                  {extraction.education.map((edu, idx) => (
-                    <div key={idx} className={styles.educationItem}>
-                      <h4 className={styles.institution}>{edu.institution}</h4>
-                      <div className={styles.degreeInfo}>
-                        {edu.degree && <span className={styles.degree}>{edu.degree}</span>}
-                        {edu.field && <span className={styles.field}>{edu.field}</span>}
-                        {edu.graduationYear && <span className={styles.year}>{edu.graduationYear}</span>}
-                      </div>
+              <div className="space-y-3">
+                {extraction.education.map((edu, idx) => (
+                  <Card key={idx} className="border-l-4 border-l-green-500 dark:border-l-green-600 p-4">
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{edu.institution}</h4>
+                    <div className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                      {edu.degree && <p>{edu.degree}</p>}
+                      {edu.field && <p>{edu.field}</p>}
+                      {edu.graduationYear && (
+                        <p className="text-xs text-gray-500 dark:text-gray-500">{edu.graduationYear}</p>
+                      )}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className={styles.emptyState}>No education listed</p>
-              )}
+                  </Card>
+                ))}
+              </div>
             </section>
+          )}
 
-            {/* Certifications - spans both columns */}
-            {extraction.certifications.length > 0 && (
-              <section className={`${styles.section} ${styles.fullWidth}`}>
-                <h3 className={styles.sectionTitle}>Certifications</h3>
-                <div className={styles.certificationsList}>
-                  {extraction.certifications.map((cert, idx) => (
-                    <div key={idx} className={styles.certificationItem}>
-                      <h4 className={styles.certName}>{cert.name}</h4>
-                      <div className={styles.certInfo}>
-                        {cert.issuer && <span>{cert.issuer}</span>}
-                        {cert.year && <span>{cert.year}</span>}
-                      </div>
+          {/* Certifications */}
+          {extraction.certifications.length > 0 && (
+            <section className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Certifications</h3>
+              <div className="space-y-3">
+                {extraction.certifications.map((cert, idx) => (
+                  <Card key={idx} className="border-l-4 border-l-amber-500 dark:border-l-amber-600 p-4">
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{cert.name}</h4>
+                    <div className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                      {cert.issuer && <p>{cert.issuer}</p>}
+                      {cert.year && <p className="text-xs text-gray-500 dark:text-gray-500">{cert.year}</p>}
                     </div>
-                  ))}
-                </div>
-              </section>
-            )}
-          </div>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
         {/* Right column: Raw JSON */}
-        <div className={styles.rightColumn}>
-          <div className={styles.jsonContainer}>
-            <h3 className={styles.jsonTitle}>Raw API Response</h3>
-            <pre className={styles.jsonDisplay}>{JSON.stringify(extraction, null, 2)}</pre>
-          </div>
+        <div className="lg:col-span-1">
+          <Card className="h-full flex flex-col bg-slate-900 dark:bg-slate-800 border-gray-700 dark:border-slate-700">
+            <div className="px-4 py-3 border-b border-slate-700 dark:border-slate-600">
+              <h3 className="text-sm font-semibold text-slate-100">Raw API Response</h3>
+            </div>
+            <ScrollArea className="flex-1">
+              <pre className="p-4 text-xs text-slate-100 font-mono leading-relaxed whitespace-pre-wrap break-words">
+                {JSON.stringify(extraction, null, 2)}
+              </pre>
+            </ScrollArea>
+          </Card>
         </div>
       </div>
 
       {/* Metadata Section - Collapsible */}
-      <section className={styles.metadataSection}>
+      <section className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg mb-6 overflow-hidden">
         <button
-          className={styles.metadataToggle}
+          className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800 cursor-pointer flex items-center gap-2 transition-colors border-b border-gray-200 dark:border-slate-800"
           onClick={() => setIsMetadataOpen(!isMetadataOpen)}
           aria-expanded={isMetadataOpen}
         >
-          <span className={styles.toggleIndicator}>{isMetadataOpen ? '▼' : '▶'}</span>
-          Extraction Metadata
+          <span className={`transform transition-transform ${isMetadataOpen ? 'rotate-0' : '-rotate-90'}`}>▼</span>
+          <span className="font-medium text-gray-900 dark:text-white">Extraction Metadata</span>
         </button>
         {isMetadataOpen && (
-          <div className={styles.metadataContent}>
-            <div className={styles.metadataItem}>
-              <span className={styles.metadataLabel}>Model:</span>
-              <code>{extraction.extractionMeta.modelId}</code>
+          <div className="px-4 py-3 bg-white dark:bg-slate-950 space-y-3">
+            <div className="flex justify-between items-center text-sm">
+              <span className="font-medium text-gray-700 dark:text-gray-300">Model:</span>
+              <code className="text-gray-600 dark:text-gray-400 font-mono">{extraction.extractionMeta.modelId}</code>
             </div>
-            <div className={styles.metadataItem}>
-              <span className={styles.metadataLabel}>Processed:</span>
-              <time>{new Date(extraction.extractionMeta.processedAt).toLocaleString()}</time>
+            <div className="flex justify-between items-center text-sm">
+              <span className="font-medium text-gray-700 dark:text-gray-300">Processed:</span>
+              <time className="text-gray-600 dark:text-gray-400">
+                {new Date(extraction.extractionMeta.processedAt).toLocaleString()}
+              </time>
             </div>
-            <div className={styles.metadataItem}>
-              <span className={styles.metadataLabel}>Source:</span>
-              <span>{extraction.extractionMeta.sourceFormat.toUpperCase()}</span>
+            <div className="flex justify-between items-center text-sm">
+              <span className="font-medium text-gray-700 dark:text-gray-300">Source:</span>
+              <span className="text-gray-600 dark:text-gray-400">
+                {extraction.extractionMeta.sourceFormat.toUpperCase()}
+              </span>
             </div>
           </div>
         )}
       </section>
 
       {/* Action Button */}
-      <footer className={styles.footer}>
-        <button className={styles.resetButton} onClick={onReset}>
+      <div className="flex justify-center">
+        <Button onClick={onReset} size="lg" className="px-8">
           Analyze Another Résumé
-        </button>
-      </footer>
+        </Button>
+      </div>
     </div>
   );
 };
