@@ -42,10 +42,10 @@ jobs:
           role-session-name: deploy-resume-lens-${{ github.run_id }}
 
       - name: Synthesize CDK stacks
-        run: npm run synth -w infra
+        run: npm run synth --workspace infra
 
       - name: Deploy backend stack
-        run: npm run cdk deploy -w infra -- ResumeLensBackendStack --require-approval never
+        run: npm run deploy --workspace infra -- ResumeLensBackendStack
 
       - name: Retrieve API Gateway URL
         id: get-api-url
@@ -58,7 +58,7 @@ jobs:
           echo "VITE_API_BASE_URL=$API_URL" >> packages/web/.env
 
       - name: Build frontend
-        run: npm run build -w packages/web
+        run: npm run build --workspace packages/web
 
       - name: Deploy frontend stack
-        run: npm run cdk deploy -w infra -- ResumeLensFrontendStack --require-approval never
+        run: npm run deploy --workspace infra -- ResumeLensFrontendStack

@@ -7,6 +7,10 @@
     "build": "tsc",
     "clean": "rimraf dist cdk.out",
     "cdk": "cdk",
+    "deploy": "cdk deploy --require-approval never",
+    "deploy:all": "cdk deploy --all --require-approval never",
+    "destroy": "cdk destroy --force",
+    "destroy:all": "cdk destroy --all --force",
     "synth": "cdk synth"
   },
   "dependencies": {
