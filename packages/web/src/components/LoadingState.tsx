@@ -11,14 +11,14 @@ import { Skeleton } from '@/components/shadcn/skeleton';
  */
 const LoadingState = () => {
   return (
-    <div className="relative p-8 bg-background min-h-125 flex flex-col">
+    <div className="relative p-8 bg-background min-h-125 flex flex-col max-w-7xl mx-auto">
       {/* Overlay message - centered on top of skeleton */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
         <div className="text-4xl font-bold text-primary">Analyzing…</div>
       </div>
 
       {/* Two-column layout mirroring ResultCard */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 opacity-50 dark:opacity-30 flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 opacity-50 dark:opacity-30 flex-1">
         {/* Left column: Structured skeleton content */}
         <div className="min-w-0 space-y-6">
           {/* Header skeleton */}
@@ -37,7 +37,7 @@ const LoadingState = () => {
           </div>
 
           {/* AI Inferences / Seniority Badge section */}
-          <div className="space-y-2 pl-3 border-l-4 border-purple-400">
+          <div className="space-y-2">
             <Skeleton className="h-5 w-2/3" />
             <Skeleton className="h-8 w-28" />
           </div>

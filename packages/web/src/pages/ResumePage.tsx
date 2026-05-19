@@ -1,10 +1,12 @@
 import { JSX, useState } from 'react';
+import { Toaster } from 'sonner';
 import type { ResumeExtraction } from '@resume-lens/shared';
 import { ResumeLensError } from '@resume-lens/shared';
 
 import { extractResume, NetworkError } from '@/api/client';
 import { getErrorMessage, NETWORK_ERROR_MESSAGE } from '@/utils/error-messages';
-import Header from '@/components/Header';
+import { useTheme } from '@/contexts/ThemeContext';
+import Header from '@/components/header/Header';
 import UploadForm from '@/components/UploadForm';
 import LoadingState from '@/components/LoadingState';
 import ResultCard from '@/components/ResultCard';
@@ -18,6 +20,7 @@ const ResumePage = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [extractionResult, setExtractionResult] = useState<ResumeExtraction | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { theme } = useTheme();
 
   const handleUpload = async (file: File) => {
     try {
@@ -60,11 +63,14 @@ const ResumePage = (): JSX.Element => {
   return (
     <div>
       <Header />
-      {isLoading && <LoadingState />}
-      {!isLoading && !extractionResult && (
-        <UploadForm onUpload={handleUpload} onStartSubmit={handleStartSubmit} error={error} />
-      )}
-      {extractionResult && <ResultCard extraction={extractionResult} onReset={handleReset} />}
+      <div>
+        {isLoading && <LoadingState />}
+        {!isLoading && !extractionResult && (
+          <UploadForm onUpload={handleUpload} onStartSubmit={handleStartSubmit} error={error} />
+        )}
+        {extractionResult && <ResultCard extraction={extractionResult} onReset={handleReset} />}
+      </div>
+      <Toaster position="top-center" theme={theme} duration={3000} />
     </div>
   );
 };
