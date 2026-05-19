@@ -1,35 +1,23 @@
 import { Moon, Sun } from 'lucide-react';
 
 import { Button } from '@/components/shadcn/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/shadcn/dropdown-menu';
 import { useTheme } from '@/contexts/ThemeContext';
 
 /**
- * ThemeToggle component provides a dropdown menu to switch between light, dark, and system themes.
- * Displays sun/moon icons that animate based on the current theme.
+ * ThemeToggle component provides a button to toggle between light and dark themes.
+ * The icon indicates which theme it will switch to (sun for dark, moon for light).
  */
 export const ThemeToggle = () => {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+
+  const handleToggle = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button variant="ghost" size="icon" onClick={handleToggle}>
+      {theme === 'light' ? <Moon className="h-[1.2rem] w-[1.2rem]" /> : <Sun className="h-[1.2rem] w-[1.2rem]" />}
+      <span className="sr-only">Toggle theme</span>
+    </Button>
   );
 };
