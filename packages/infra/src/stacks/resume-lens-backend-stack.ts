@@ -29,7 +29,7 @@ export class ResumeLensBackendStack extends cdk.Stack {
       functionName: 'resume-lens-extract',
       runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'handler',
-      entry: path.join(import.meta.dirname, '../../../packages/api/src/handlers/extract-handler.ts'),
+      entry: path.join(import.meta.dirname, '../../../api/src/handlers/extract-handler.ts'),
       memorySize: 512,
       timeout: cdk.Duration.seconds(30),
       environment: {
