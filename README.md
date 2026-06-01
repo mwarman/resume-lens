@@ -4,9 +4,7 @@
 
 Upload a PDF résumé → receive structured, typed JSON extraction of the candidate's profile, including an **AI-inferred seniority level** computed by Claude on AWS Bedrock.
 
----
-
-## 🎯 Purpose
+## Purpose
 
 `resume-lens` demonstrates production-quality AI integration skills. It showcases:
 
@@ -15,13 +13,9 @@ Upload a PDF résumé → receive structured, typed JSON extraction of the candi
 - **TypeScript discipline**: Shared types across frontend/backend enforcing contracts at compile time
 - **End-to-end ownership**: Frontend, backend, infrastructure-as-code, and comprehensive documentation
 
-**Intended audience:** Technical reviewers, hiring managers, and architects evaluating AI integration capability at scale.
-
 **Note:** The intent of the project is to specifically highlight the AI integration with AWS Bedrock located in the Lambda function. The other components, e.g. the web frontend, serve to facilitate the interaction with the AI and are not necessarily designed with the same robustness as a production-ready React app would be.
 
----
-
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ### Data Flow
 
@@ -63,9 +57,7 @@ graph LR
 - **Typed end-to-end**: `ResumeExtraction` interface enforced across frontend and backend at compile time.
 - **Confidence transparency**: Per-section extraction confidence (`experience`, `education`, `skills`) rated `high | medium | low`.
 
----
-
-## 🤖 AI Integration Design
+## AI Integration Design
 
 ### Why AWS Bedrock Over Direct Anthropic API? (AD-002)
 
@@ -100,9 +92,7 @@ The extraction service constructs a detailed prompt that:
 
 This structured approach ensures consistent, predictable extraction and signals careful prompt engineering rather than ad-hoc prompting.
 
----
-
-## 📦 Tech Stack
+## Tech Stack
 
 | Layer            | Technology            | Notes                                  |
 | :--------------- | :-------------------- | :------------------------------------- |
@@ -115,32 +105,28 @@ This structured approach ensures consistent, predictable extraction and signals 
 | Automation       | GitHub Actions        | CI, deploy, and teardown workflows     |
 | Language         | TypeScript throughout | Shared types across all packages       |
 
----
-
-## 📂 Monorepo Structure
+## Monorepo Structure
 
 ```
 resume-lens/
 ├── packages/
-│   ├── shared/              # Shared types, error codes — zero runtime dependencies
-│   ├── api/                 # Lambda handler + three-stage extraction pipeline
-│   └── web/                 # React SPA frontend
-├── infra/                   # AWS CDK stack (TypeScript)
+│   ├── api/                          # Lambda handler + three-stage extraction pipeline
+│   ├── infra/                        # AWS CDK stack (TypeScript)
+│   ├── shared/                       # Shared types, error codes — zero runtime dependencies
+│   └── web/                          # React SPA frontend
 ├── docs/
-│   ├── project-overview.md  # Detailed tech stack, architecture, data flow
-│   └── architectural-decisions.md  # Design rationale (AD-001 through AD-012)
+│   ├── project-overview.md           # Detailed tech stack, architecture, data flow
+│   └── architectural-decisions.md    # Design rationale (AD-001 through AD-012)
 ├── .github/
-│   └── copilot-instructions.md  # Development guidance, coding standards
-└── package.json             # npm workspaces root
+│   └── copilot-instructions.md       # Development guidance, coding standards
+└── package.json                      # npm workspaces root
 ```
 
 **Key insight**: TypeScript is used everywhere — frontend, backend, infrastructure. This consistency is intentional and signals architectural discipline.
 
 See [Project Overview](./docs/project-overview.md) for detailed structure and responsibilities of each package.
 
----
-
-## 🚀 Local Development
+## Local Development
 
 ### Prerequisites
 
@@ -173,9 +159,7 @@ See [Project Overview](./docs/project-overview.md) for detailed structure and re
 - API responses are typed against `@resume-lens/shared` in the frontend, catching contract violations at compile time.
 - Local development works best deploying the backend to AWS and configuring the frontend with the API Gateway base URL; however, tooling like LocalStack could enable a complete local runtime environment.
 
----
-
-## 🛠️ Deployment
+## Deployment
 
 ### Prerequisites
 
@@ -225,9 +209,7 @@ See [Project Overview](./docs/project-overview.md) for detailed structure and re
 - **API requests**: CloudWatch Logs via AWS Console
 - **Bedrock usage**: Bedrock console shows model invocation metrics
 
----
-
-## 💰 Cost Profile
+## Cost Profile
 
 Estimated monthly cost at demo scale (~100 invocations):
 
@@ -241,27 +223,21 @@ Estimated monthly cost at demo scale (~100 invocations):
 
 At production scale (10K invocations/month), costs remain sub-$10.
 
----
-
-## 📚 Documentation
+## Documentation
 
 - **[Project Overview](./docs/project-overview.md)** — Detailed tech stack, monorepo structure, data flow, output schema, error handling, cost profile
 - **[Architecture Decisions](./docs/architecural-decisions.md)** — Authoritative log of all design decisions (AD-001 through AD-012) with rationale and trade-offs
-- **[Copilot Instructions](./github/copilot-instructions.md)** — Development guidance, coding standards, build order, and when to escalate
+- **[AGENTS.md](./AGENTS.md)** — Agentic AI development guidance, coding standards, build order, and when to escalate
 
----
-
-## 📖 Build Order (Recommended)
+## Build Order (Recommended)
 
 Follow this sequence to build and test end-to-end:
 
 1. **`packages/shared`** — Types and error codes first; all other packages depend on this
 2. **`packages/api`** — Lambda handler and extraction services; test locally before deploying
-3. **`infra/`** — AWS CDK stack; deploy Lambda + API Gateway and validate end-to-end
-4. **`packages/web`** — React SPA frontend; build against deployed API and deploy to S3/CloudFront last
+3. **`packages/web`** — React SPA frontend; build against deployed API and deploy to S3/CloudFront last
+4. **`packages/infra`** — AWS CDK stack; deploy Lambda + API Gateway and validate end-to-end
 
----
+## License
 
-## 📝 License
-
-MIT
+[MIT](./LICENSE)
