@@ -56,7 +56,7 @@ export class ResumeLensFrontendStack extends cdk.Stack {
 
     // Deploy the web package to S3 and invalidate CloudFront cache on updates
     new s3_deployment.BucketDeployment(this, 'WebsiteDeployment', {
-      sources: [s3_deployment.Source.asset(path.join(import.meta.dirname, '../../../packages/web/dist'))],
+      sources: [s3_deployment.Source.asset(path.join(import.meta.dirname, '../../../web/dist'))],
       destinationBucket: websiteBucket,
       distribution: distribution,
       distributionPaths: ['/*'],

@@ -42,10 +42,10 @@ jobs:
           role-session-name: deploy-resume-lens-${{ github.run_id }}
 
       - name: Synthesize CDK stacks
-        run: npm run synth --workspace infra
+        run: npm run cdk:synth --workspace packages/infra
 
       - name: Deploy backend stack
-        run: npm run deploy --workspace infra -- ResumeLensBackendStack
+        run: npm run cdk:deploy --workspace packages/infra -- ResumeLensBackendStack
 
       - name: Retrieve API Gateway URL
         id: get-api-url
@@ -61,4 +61,4 @@ jobs:
         run: npm run build --workspace packages/web
 
       - name: Deploy frontend stack
-        run: npm run deploy --workspace infra -- ResumeLensFrontendStack
+        run: npm run cdk:deploy --workspace packages/infra -- ResumeLensFrontendStack

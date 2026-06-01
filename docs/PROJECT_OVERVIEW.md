@@ -1,19 +1,10 @@
 # Project Overview: resume-lens
 
-**Version:** v1.0  
-**Type:** Portfolio project — AI integration demonstration  
-**Status:** v1 build complete  
-**Last updated:** May 2026
-
----
-
 ## **Purpose**
 
 `resume-lens` is a portfolio piece designed to demonstrate production-quality AI integration skills to technical hiring managers. It is intentionally scoped to showcase architectural judgment and clean integration patterns rather than AI depth or model customization.
 
 The core feature: upload a PDF résumé, receive a structured, typed JSON extraction of the candidate's profile — including one AI-inferred field (`inferredSeniorityLevel`) that demonstrates the distinction between parsing and intelligence.
-
----
 
 ## **Tech Stack**
 
@@ -29,8 +20,6 @@ The core feature: upload a PDF résumé, receive a structured, typed JSON extrac
 | Infrastructure   | AWS CDK (TypeScript)              | Single stack, all resources co-located     |
 | Language         | TypeScript throughout             | Shared types across all packages           |
 
----
-
 ## **Monorepo Structure**
 
 ```
@@ -38,8 +27,8 @@ resume-lens/
 ├── packages/
 │ ├── shared/                # TypeScript types, error codes — no runtime deps
 │ ├── api/                   # TypeScript Lambda functions
+│ ├── infra/                 # AWS CDK stack
 │ └── web/                   # React + Vite SPA
-├── infra/                   # AWS CDK stack
 ├── package.json             # npm workspaces root
 ├── tsconfig.base.json       # Shared TS compiler config
 └── README.md
@@ -79,17 +68,15 @@ web/src/
 └── utils/                  # Utilities
 ```
 
-### `infra/`
+### `packages/infra`
 
 AWS CDK provisions all resources. For simplicity in this project, use a single stack.
 
 ```
 infra/
 ├──app.ts                   # CDK app entry point
-└── stacks/                 # CDK stacks
+└── src/stacks/             # CDK stacks
 ```
-
----
 
 ## **Data Flow**
 
@@ -118,8 +105,6 @@ Browser
 ```
 
 All processing is synchronous. No persistence layer. Documents are held in memory for the duration of a single Lambda invocation only.
-
----
 
 ## **Output Type**
 
@@ -176,8 +161,6 @@ export interface ResumeExtraction {
 
 `extractionMeta.confidence` provides per-section confidence signals, allowing the frontend to flag uncertain extractions without surfacing model internals.
 
----
-
 ## **Error Handling Surface**
 
 All error codes are typed in `@resume-lens/shared`. Handled error conditions:
@@ -191,8 +174,6 @@ All error codes are typed in `@resume-lens/shared`. Handled error conditions:
 | Bedrock service error     | 502         | Generic upstream failure               |
 | Extraction parse failure  | 422         | Model returned non-conformant JSON     |
 
----
-
 ## **Cost Profile (demo-scale)**
 
 | Resource                                       | Estimated monthly cost |
@@ -203,13 +184,11 @@ All error codes are typed in `@resume-lens/shared`. Handled error conditions:
 | S3 \+ CloudFront (static hosting, low traffic) | \~$0.02                |
 | **Total**                                      | **\< $0.10/month**     |
 
----
-
 ## **Build Order**
 
 Recommended implementation sequence:
 
 1. `packages/shared` — types and error codes first; everything else depends on them
 2. `packages/api` — build and test locally with a mock Lambda handler before deploying
-3. `infra/` — CDK stack; deploy Lambda \+ API Gateway first, validate end-to-end
-4. `packages/web` — build against the deployed API; deploy to S3/CloudFront last
+3. `packages/web` — build against the deployed API; deploy to S3/CloudFront last
+4. `packages/infra` — CDK stack; deploy Lambda \+ API Gateway first, validate end-to-end
