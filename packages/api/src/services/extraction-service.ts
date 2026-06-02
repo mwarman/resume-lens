@@ -9,6 +9,7 @@ import {
   type ResumeExtraction,
 } from '@resume-lens/shared';
 import { MODEL_ID } from '../utils/constants';
+import { EXTRACT_RESUME_PROMPT } from '../utils/prompts/extract-resume';
 
 // Instantiated once per Lambda container — connection reuse across warm invocations
 const bedrockClient = new BedrockRuntimeClient({});
@@ -105,13 +106,14 @@ export const extract = async (rawText: string): Promise<ResumeExtraction> => {
   console.log({ service: 'ExtractionService', event: 'extract_start', textLength: rawText.length });
 
   // Construct the prompt and payload for Bedrock
+  const prompt = EXTRACT_RESUME_PROMPT.replace('{resumeText}', rawText);
   const payload = {
     anthropic_version: 'bedrock-2023-05-31',
     max_tokens: 4096,
     messages: [
       {
         role: 'user',
-        content: `Extract structured data from this resume:\n\n${rawText}`,
+        content: prompt,
       },
     ],
     output_config: {
