@@ -17,12 +17,12 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version-file: .nvmrc
+          node-version-file: '.nvmrc'
           cache: npm
 
       - name: Install dependencies
@@ -36,3 +36,6 @@ jobs:
 
       - name: Synthesize Infrastructure
         run: npm run cdk:synth --workspace packages/infra
+
+      - name: Cleanup
+        run: npm run clean
