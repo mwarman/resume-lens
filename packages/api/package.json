@@ -1,6 +1,6 @@
 {
   "name": "@resume-lens/api",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "API service for resume-lens",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,16 +9,14 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@aws-sdk/client-bedrock-runtime": "3.1059.0",
+    "@aws-sdk/client-bedrock-runtime": "3.1144.0",
     "@resume-lens/shared": "*",
     "busboy": "1.6.0",
-    "unpdf": "1.6.2"
+    "unpdf": "1.8.1"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.161",
-    "@types/busboy": "1.5.4",
-    "@types/node": "25.9.1",
-    "typescript": "6.0.3"
+    "@types/aws-lambda": "8.10.164",
+    "@types/busboy": "1.5.4"
   },
   "keywords": [],
   "author": "",

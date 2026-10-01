@@ -4,7 +4,7 @@ import ResumePage from './pages/ResumePage';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { TooltipProvider } from '@/components/shadcn/tooltip';
 
-import '@/index.css';
+import '@/global.css';
 
 /**
  * App is the root component of the application.

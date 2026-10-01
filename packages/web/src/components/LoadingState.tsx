@@ -14,11 +14,11 @@ const LoadingState = () => {
     <div className="relative p-8 bg-background min-h-125 flex flex-col max-w-7xl mx-auto">
       {/* Overlay message - centered on top of skeleton */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-        <div className="text-4xl font-bold text-primary">Analyzing…</div>
+        <div className="text-4xl font-bold">Analyzing…</div>
       </div>
 
       {/* Two-column layout mirroring ResultCard */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 opacity-50 dark:opacity-30 flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 opacity-75 dark:opacity-25 flex-1">
         {/* Left column: Structured skeleton content */}
         <div className="min-w-0 space-y-6">
           {/* Header skeleton */}
