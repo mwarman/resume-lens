@@ -38,4 +38,5 @@ jobs:
         run: npm run cdk:synth --workspace packages/infra
 
       - name: Cleanup
+        if: always()
         run: npm run clean

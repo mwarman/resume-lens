@@ -48,4 +48,5 @@ jobs:
         run: npm run cdk:destroy:all --workspace packages/infra
 
       - name: Cleanup
+        if: always()
         run: npm run clean
