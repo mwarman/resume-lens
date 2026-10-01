@@ -1,6 +1,6 @@
 {
   "name": "resume-lens",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "AI integration portfolio project — synchronous résumé extraction using AWS Lambda, Bedrock, and TypeScript.",
   "workspaces": [
     "packages/shared",
@@ -25,7 +25,8 @@
   "author": "Matthew Warman",
   "license": "MIT",
   "devDependencies": {
-    "prettier": "3.8.3",
+    "@types/node": "26.6.3",
+    "prettier": "3.9.9",
     "rimraf": "6.1.3",
     "typescript": "6.0.3"
   }
